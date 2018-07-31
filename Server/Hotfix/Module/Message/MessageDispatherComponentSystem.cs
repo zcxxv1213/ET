@@ -29,10 +29,11 @@ namespace ETHotfix
 	{
 		public static void Load(this MessageDispatherComponent self)
 		{
+            Log.Info("LoadHandles");
 			self.Handlers.Clear();
 
 			AppType appType = Game.Scene.GetComponent<StartConfigComponent>().StartConfig.AppType;
-
+            Log.Info("AppType " +appType.ToString());
 			List<Type> types = Game.EventSystem.GetTypes(typeof(MessageHandlerAttribute));
 
 			foreach (Type type in types)
@@ -40,12 +41,15 @@ namespace ETHotfix
 				object[] attrs = type.GetCustomAttributes(typeof(MessageHandlerAttribute), false);
 				if (attrs.Length == 0)
 				{
+                    Log.Info("Attrs == 0");
 					continue;
 				}
 
 				MessageHandlerAttribute messageHandlerAttribute = attrs[0] as MessageHandlerAttribute;
 				if (!messageHandlerAttribute.Type.Is(appType))
 				{
+                    Log.Info("messageHandlerAttribute.Type.Is(appType) == false");
+
 					continue;
 				}
 
@@ -69,6 +73,7 @@ namespace ETHotfix
 
 		public static void RegisterHandler(this MessageDispatherComponent self, ushort opcode, IMHandler handler)
 		{
+            Log.Info(opcode.ToString());
 			if (!self.Handlers.ContainsKey(opcode))
 			{
 				self.Handlers.Add(opcode, new List<IMHandler>());

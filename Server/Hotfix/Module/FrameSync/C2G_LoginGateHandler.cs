@@ -20,14 +20,16 @@ namespace ETHotfix
 					return;
 				}
 				Player player = ComponentFactory.Create<Player, string>(account);
-				Game.Scene.GetComponent<PlayerComponent>().Add(player);
+                //UnitID 从数据库得到
+                player.Id = 10000L + Game.Scene.GetComponent<PlayerComponent>().Count;
+                Game.Scene.GetComponent<PlayerComponent>().Add(player);
 				session.AddComponent<SessionPlayerComponent>().Player = player;
 				session.AddComponent<MailBoxComponent, string>(ActorType.GateSession);
 
 				response.PlayerId = player.Id;
 				reply(response);
 
-				session.Send(new G2C_TestHotfixMessage() { Info = "recv hotfix message success" });
+				//session.Send(new G2C_TestHotfixMessage() { Info = "recv hotfix message success" });
 			}
 			catch (Exception e)
 			{

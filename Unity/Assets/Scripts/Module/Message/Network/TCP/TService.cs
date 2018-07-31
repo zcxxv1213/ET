@@ -54,6 +54,7 @@ namespace ETModel
 		{
 			if (this.acceptor != null)
 			{
+                Log.Info("Accept");
 				this.AcceptAsync();
 			}
 		}

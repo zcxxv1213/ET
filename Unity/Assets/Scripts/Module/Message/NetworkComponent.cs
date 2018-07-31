@@ -24,9 +24,11 @@ namespace ETModel
 				switch (protocol)
 				{
 					case NetworkProtocol.KCP:
+                        Log.Info("KcpAwake");
 						this.Service = new KService();
 						break;
 					case NetworkProtocol.TCP:
+                        Log.Info("TcpAwake");
 						this.Service = new TService();
 						break;
 					default:
@@ -50,10 +52,12 @@ namespace ETModel
 				switch (protocol)
 				{
 					case NetworkProtocol.KCP:
-						this.Service = new KService(ipEndPoint);
+                        Log.Info("KcpAwake");
+                        this.Service = new KService(ipEndPoint);
 						break;
 					case NetworkProtocol.TCP:
-						this.Service = new TService(ipEndPoint);
+                        Log.Info("TcpAwake");
+                        this.Service = new TService(ipEndPoint);
 						break;
 					default:
 						throw new ArgumentOutOfRangeException();

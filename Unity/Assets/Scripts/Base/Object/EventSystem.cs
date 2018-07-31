@@ -80,7 +80,6 @@ namespace ETModel
 				{
 					continue;
 				}
-
 				object obj = Activator.CreateInstance(type);
 
 				IAwakeSystem objectSystem = obj as IAwakeSystem;

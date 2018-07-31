@@ -12,7 +12,8 @@ namespace ETHotfix
 			try
 			{
 				OpcodeTypeComponent opcodeTypeComponent = session.Network.Entity.GetComponent<OpcodeTypeComponent>();
-				object instance = opcodeTypeComponent.GetInstance(packet.Opcode);
+                Log.Info(packet.Opcode.ToString());
+                object instance = opcodeTypeComponent.GetInstance(packet.Opcode);
 				message = session.Network.MessagePacker.DeserializeFrom(instance, packet.Stream);
 			}
 			catch (Exception e)

@@ -47,3 +47,9 @@ _ReSharper.CSharp/
 .DS_Store
 Server/.DS_Store
 /Server/.vscode/
+/Unity/Assembly-CSharp.csproj
+/Unity/Assembly-CSharp-Editor.csproj
+/Unity/Assembly-CSharp-Editor-firstpass.csproj
+/Unity/Assembly-CSharp-firstpass.csproj
+/Unity/UnityPackageManager
+/Unity/UnityPackageManager

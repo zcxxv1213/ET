@@ -13,15 +13,21 @@ namespace ETHotfix
 			R2C_Login response = new R2C_Login();
 			try
 			{
-				//if (message.Account != "abcdef" || message.Password != "111111")
-				//{
-				//	response.Error = ErrorCode.ERR_AccountOrPasswordError;
-				//	reply(response);
-				//	return;
-				//}
-
-				// 随机分配一个Gate
-				StartConfig config = Game.Scene.GetComponent<RealmGateAddressComponent>().GetAddress();
+                //if (message.Account != "abcdef" || message.Password != "111111")
+                //{
+                //	response.Error = ErrorCode.ERR_AccountOrPasswordError;
+                //	reply(response);
+                //	return;
+                //}
+                if (message.Account == null)
+                {
+                    response.Error = ErrorCode.ERR_AccountOrPasswordError;
+                    reply(response);
+                    Log.Info("ErrorLoginAccount");
+                    return;
+                }
+                // 随机分配一个Gate
+                StartConfig config = Game.Scene.GetComponent<RealmGateAddressComponent>().GetAddress();
 				//Log.Debug($"gate address: {MongoHelper.ToJson(config)}");
 				IPEndPoint innerAddress = config.GetComponent<InnerConfig>().IPEndPoint;
 				Session gateSession = Game.Scene.GetComponent<NetInnerComponent>().Get(innerAddress);
@@ -33,6 +39,8 @@ namespace ETHotfix
 
 				response.Address = outerAddress;
 				response.Key = g2RGetLoginKey.Key;
+                Log.Info(response.Address);
+                Log.Info(response.Key.ToJson().ToString());
 				reply(response);
 			}
 			catch (Exception e)

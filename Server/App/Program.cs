@@ -88,7 +88,7 @@ namespace App
 						Game.Scene.AddComponent<DBCacheComponent>();
 						Game.Scene.AddComponent<LocationComponent>();
 						Game.Scene.AddComponent<ActorMessageDispatherComponent>();
-						Game.Scene.AddComponent<NetInnerComponent, IPEndPoint>(innerConfig.IPEndPoint);
+                        Game.Scene.AddComponent<NetInnerComponent, IPEndPoint>(innerConfig.IPEndPoint);
 						Game.Scene.AddComponent<NetOuterComponent, IPEndPoint>(outerConfig.IPEndPoint);
 						Game.Scene.AddComponent<LocationProxyComponent>();
 						Game.Scene.AddComponent<AppManagerComponent>();
