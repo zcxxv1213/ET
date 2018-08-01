@@ -398,6 +398,51 @@ namespace ETHotfix {
 
   }
 
+  public partial class C2G_SendMsg : pb::IMessage {
+    private static readonly pb::MessageParser<C2G_SendMsg> _parser = new pb::MessageParser<C2G_SendMsg>(() => new C2G_SendMsg());
+    public static pb::MessageParser<C2G_SendMsg> Parser { get { return _parser; } }
+
+    private string info_ = "";
+    public string Info {
+      get { return info_; }
+      set {
+        info_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Info.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Info);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (Info.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Info);
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      info_ = "";
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 10: {
+            Info = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public partial class G2C_TestHotfixMessage : pb::IMessage {
     private static readonly pb::MessageParser<G2C_TestHotfixMessage> _parser = new pb::MessageParser<G2C_TestHotfixMessage>(() => new G2C_TestHotfixMessage());
     public static pb::MessageParser<G2C_TestHotfixMessage> Parser { get { return _parser; } }
