@@ -27,6 +27,8 @@ namespace ETModel
 
 		public TChannel(IPEndPoint ipEndPoint, TService service): base(service, ChannelType.Connect)
 		{
+			this.InstanceId = IdGenerater.GenerateId();
+			
 			this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			this.socket.NoDelay = true;
 			this.parser = new PacketParser(this.recvBuffer);
@@ -41,6 +43,8 @@ namespace ETModel
 		
 		public TChannel(Socket socket, TService service): base(service, ChannelType.Accept)
 		{
+			this.InstanceId = IdGenerater.GenerateId();
+			
 			this.socket = socket;
 			this.socket.NoDelay = true;
 			this.parser = new PacketParser(this.recvBuffer);
@@ -96,8 +100,6 @@ namespace ETModel
 			{
 				throw new Exception("TChannel已经被Dispose, 不能发送消息");
 			}
-			byte[] sizeBuffer = BitConverter.GetBytes(length);
-			this.sendBuffer.Write(sizeBuffer, 0, sizeBuffer.Length);
 			this.sendBuffer.Write(buffer, index, length);
 
 			if(!this.isSending)
@@ -113,9 +115,6 @@ namespace ETModel
 				throw new Exception("TChannel已经被Dispose, 不能发送消息");
 			}
 
-			ushort size = (ushort)(stream.Length - stream.Position);
-			byte[] sizeBuffer = BitConverter.GetBytes(size);
-			this.sendBuffer.Write(sizeBuffer, 0, sizeBuffer.Length);
 			this.sendBuffer.ReadFrom(stream);
 
 			if(!this.isSending)
