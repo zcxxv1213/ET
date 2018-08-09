@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+#if SERVER
 using System.Runtime.InteropServices;
+#endif
 
 namespace ETModel
 {
@@ -20,34 +22,43 @@ namespace ETModel
 
 		private uint IdGenerater = 1000;
 
+		// KService创建的时间
+		public long StartTime;
+		// 当前时间 - KService创建的时间
 		public uint TimeNow { get; private set; }
 
 		private Socket socket;
 
 		private readonly Dictionary<long, KChannel> localConnChannels = new Dictionary<long, KChannel>();
-
-		private readonly Dictionary<uint, KChannel> waitConnectChannels = new Dictionary<uint, KChannel>();
-
+		
 		private readonly byte[] cache = new byte[8192];
 
 		private readonly Queue<long> removedChannels = new Queue<long>();
 
+		#region 连接相关
+		// 记录等待连接的channel，10秒后或者第一个消息过来才会从这个dict中删除
+		private readonly Dictionary<uint, KChannel> waitConnectChannels = new Dictionary<uint, KChannel>();
+		private readonly List<uint> connectTimeoutChannels = new List<uint>();
+		private uint lastCheckTime;
+		#endregion
+
+		#region 定时器相关
 		// 下帧要更新的channel
 		private readonly HashSet<long> updateChannels = new HashSet<long>();
-
 		// 下次时间更新的channel
 		private readonly MultiMap<long, long> timeId = new MultiMap<long, long>();
-
 		private readonly List<long> timeOutTime = new List<long>();
-
 		// 记录最小时间，不用每次都去MultiMap取第一个值
 		private long minTime;
+		#endregion
+
 
 		private EndPoint ipEndPoint = new IPEndPoint(IPAddress.Any, 0);
 
 		public KService(IPEndPoint ipEndPoint)
 		{
-			this.TimeNow = (uint)TimeHelper.ClientNow();
+			this.StartTime = TimeHelper.ClientNow();
+			this.TimeNow = (uint)(TimeHelper.ClientNow() - this.StartTime);
 			this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 			//this.socket.Blocking = false;
 			this.socket.Bind(ipEndPoint);
@@ -65,7 +76,8 @@ namespace ETModel
 
 		public KService()
 		{
-			this.TimeNow = (uint)TimeHelper.ClientNow();
+			this.StartTime = TimeHelper.ClientNow();
+			this.TimeNow = (uint)(TimeHelper.ClientNow() - this.StartTime);
 			this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 			//this.socket.Blocking = false;
 			this.socket.Bind(new IPEndPoint(IPAddress.Any, 0));
@@ -159,7 +171,7 @@ namespace ETModel
 
 						localConn = ++this.IdGenerater;
 						kChannel = new KChannel(localConn, remoteConn, this.socket, acceptIpEndPoint, this);
-						this.localConnChannels[kChannel.Id] = kChannel;
+						this.localConnChannels[kChannel.LocalConn] = kChannel;
 						this.waitConnectChannels[remoteConn] = kChannel;
 
 						kChannel.HandleAccept(remoteConn);
@@ -285,20 +297,6 @@ namespace ETModel
 			return channel;
 		}
 
-		public void AddToUpdateNextTime(long time, long id)
-		{
-			if (time == 0)
-			{
-				this.updateChannels.Add(id);
-				return;
-			}
-			if (time < this.minTime)
-			{
-				this.minTime = time;
-			}
-			this.timeId.Add(time, id);
-		}
-
 		public override void Remove(long id)
 		{
 			KChannel channel;
@@ -314,12 +312,57 @@ namespace ETModel
 			channel.Dispose();
 		}
 
+#if !SERVER
+		// 客户端channel很少,直接每帧update所有channel即可,这样可以消除TimerOut方法的gc
+		public void AddToUpdateNextTime(long time, long id)
+		{
+		}
+		
 		public override void Update()
 		{
-			this.TimeNow = (uint)TimeHelper.ClientNow();
+			this.TimeNow = (uint) (TimeHelper.ClientNow() - this.StartTime);
 
 			this.Recv();
 
+			foreach (var kv in this.localConnChannels)
+			{
+				kv.Value.Update();
+			}
+			
+			while (true)
+			{
+				if (this.removedChannels.Count <= 0)
+				{
+					break;
+				}
+				long id = this.removedChannels.Dequeue();
+				this.localConnChannels.Remove(id);
+			}
+		}
+#else
+		// 服务端需要看channel的update时间是否已到
+		public void AddToUpdateNextTime(long time, long id)
+		{
+			if (time == 0)
+			{	
+				this.updateChannels.Add(id);
+				return;
+			}
+			if (time < this.minTime)
+			{
+				this.minTime = time;
+			}
+			this.timeId.Add(time, id);
+		}
+
+		public override void Update()
+		{
+			this.TimeNow = (uint)(TimeHelper.ClientNow() - this.StartTime);
+			
+			this.Recv();
+
+			this.CheckWaitTimeout();
+			
 			this.TimerOut();
 
 			foreach (long id in updateChannels)
@@ -348,6 +391,44 @@ namespace ETModel
 			}
 		}
 
+		// 2秒钟检查一次, 删除连接成功但是超过10秒还未发第一个消息过来的channel
+		private void CheckWaitTimeout()
+		{
+			if (this.TimeNow - this.lastCheckTime < 2000)
+			{
+				return;
+			}
+
+			this.lastCheckTime = this.TimeNow;
+
+			if (this.waitConnectChannels.Count == 0)
+			{
+				return;
+			}
+
+			this.connectTimeoutChannels.Clear();
+			foreach (KeyValuePair<uint,KChannel> kv in this.waitConnectChannels)
+			{
+				if (this.TimeNow - kv.Value.CreateTime < 10000)
+				{
+					continue;
+				}
+				this.connectTimeoutChannels.Add(kv.Key);
+			}
+
+			foreach (uint remoteConn in this.connectTimeoutChannels)
+			{
+				KChannel kChannel;
+				if (!this.waitConnectChannels.TryGetValue(remoteConn, out kChannel))
+				{
+					continue;
+				}
+
+				this.waitConnectChannels.Remove(remoteConn);
+				this.Remove(kChannel.LocalConn);
+			}
+		}
+
 		// 计算到期需要update的channel
 		private void TimerOut()
 		{
@@ -362,7 +443,6 @@ namespace ETModel
 			{
 				return;
 			}
-
 			this.timeOutTime.Clear();
 
 			foreach (KeyValuePair<long, List<long>> kv in this.timeId.GetDictionary())
@@ -375,7 +455,6 @@ namespace ETModel
 				}
 				this.timeOutTime.Add(k);
 			}
-
 			foreach (long k in this.timeOutTime)
 			{
 				foreach (long v in this.timeId[k])
@@ -386,5 +465,6 @@ namespace ETModel
 				this.timeId.Remove(k);
 			}
 		}
+#endif
 	}
 }
