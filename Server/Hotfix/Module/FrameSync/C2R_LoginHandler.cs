@@ -10,8 +10,9 @@ namespace ETHotfix
 	{
 		protected override async void Run(Session session, C2R_Login message, Action<R2C_Login> reply)
 		{
-			R2C_Login response = new R2C_Login();
-			try
+            Log.Info(message.RpcId.ToString());
+            R2C_Login response = new R2C_Login() { RpcId = message.RpcId };
+            try
 			{
                 //if (message.Account != "abcdef" || message.Password != "111111")
                 //{
@@ -41,7 +42,7 @@ namespace ETHotfix
 				response.Key = g2RGetLoginKey.Key;
                 Log.Info(response.Address);
                 Log.Info(response.Key.ToJson().ToString());
-				reply(response);
+                reply(response);
 			}
 			catch (Exception e)
 			{

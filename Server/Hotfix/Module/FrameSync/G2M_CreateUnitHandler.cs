@@ -12,7 +12,7 @@ namespace ETHotfix
 			M2G_CreateUnit response = new M2G_CreateUnit();
 			try
 			{
-				Unit unit = ComponentFactory.Create<Unit>();
+				Unit unit = ComponentFactory.Create<Unit,UnitType,Team>(UnitType.Hero,Team.Blue);
 
 				await unit.AddComponent<MailBoxComponent>().AddLocation();
 				unit.AddComponent<UnitGateComponent, long>(message.GateSessionId);
@@ -22,7 +22,7 @@ namespace ETHotfix
 				response.Count = Game.Scene.GetComponent<UnitComponent>().Count;
 				reply(response);
 
-				if (response.Count == 2)
+                /*if (response.Count == 2)
 				{
 					Actor_CreateUnits actorCreateUnits = new Actor_CreateUnits();
 					Unit[] units = Game.Scene.GetComponent<UnitComponent>().GetAll();
@@ -31,8 +31,15 @@ namespace ETHotfix
 						actorCreateUnits.Units.Add(new UnitInfo() {UnitId = u.Id, X = (int)(u.Position.X * 1000), Z = (int)(u.Position.Z * 1000) });
 					}
 					MessageHelper.Broadcast(actorCreateUnits);
-				}
-			}
+				}*/
+                Actor_CreateUnits actorCreateUnits = new Actor_CreateUnits();
+                Unit[] units = Game.Scene.GetComponent<UnitComponent>().GetAll();
+                foreach (Unit u in units)
+                {
+                    actorCreateUnits.Units.Add(new UnitInfo() { UnitId = u.Id, X = (int)(u.Position.X * 1000), Z = (int)(u.Position.Z * 1000) });
+                }
+                MessageHelper.Broadcast(actorCreateUnits);
+            }
 			catch (Exception e)
 			{
 				ReplyError(response, e, reply);

@@ -8,7 +8,8 @@ namespace ETHotfix
 	{
 		protected override void Run(Session session, C2G_LoginGate message, Action<G2C_LoginGate> reply)
 		{
-			G2C_LoginGate response = new G2C_LoginGate();
+            Log.Info(message.RpcId.ToString());
+            G2C_LoginGate response = new G2C_LoginGate();
 			try
 			{
 				string account = Game.Scene.GetComponent<GateSessionKeyComponent>().Get(message.Key);

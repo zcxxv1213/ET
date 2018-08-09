@@ -9,6 +9,91 @@ using scg = global::System.Collections.Generic;
 namespace ETHotfix {
 
   #region Messages
+  public partial class Player_Info_Base : pb::IMessage {
+    private static readonly pb::MessageParser<Player_Info_Base> _parser = new pb::MessageParser<Player_Info_Base>(() => new Player_Info_Base());
+    public static pb::MessageParser<Player_Info_Base> Parser { get { return _parser; } }
+
+    private int rpcId_;
+    public int RpcId {
+      get { return rpcId_; }
+      set {
+        rpcId_ = value;
+      }
+    }
+
+    private long playerId_;
+    public long PlayerId {
+      get { return playerId_; }
+      set {
+        playerId_ = value;
+      }
+    }
+
+    private string nickName_ = "";
+    public string NickName {
+      get { return nickName_; }
+      set {
+        nickName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (RpcId != 0) {
+        output.WriteRawTag(208, 5);
+        output.WriteInt32(RpcId);
+      }
+      if (PlayerId != 0L) {
+        output.WriteRawTag(216, 5);
+        output.WriteInt64(PlayerId);
+      }
+      if (NickName.Length != 0) {
+        output.WriteRawTag(226, 5);
+        output.WriteString(NickName);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (RpcId != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(RpcId);
+      }
+      if (PlayerId != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(PlayerId);
+      }
+      if (NickName.Length != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeStringSize(NickName);
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      rpcId_ = 0;
+      playerId_ = 0;
+      nickName_ = "";
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 720: {
+            RpcId = input.ReadInt32();
+            break;
+          }
+          case 728: {
+            PlayerId = input.ReadInt64();
+            break;
+          }
+          case 738: {
+            NickName = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public partial class C2R_Login : pb::IMessage {
     private static readonly pb::MessageParser<C2R_Login> _parser = new pb::MessageParser<C2R_Login>(() => new C2R_Login());
     public static pb::MessageParser<C2R_Login> Parser { get { return _parser; } }
@@ -321,6 +406,14 @@ namespace ETHotfix {
       }
     }
 
+    private global::ETHotfix.Player_Info_Base baseInfo_;
+    public global::ETHotfix.Player_Info_Base BaseInfo {
+      get { return baseInfo_; }
+      set {
+        baseInfo_ = value;
+      }
+    }
+
     private long playerId_;
     public long PlayerId {
       get { return playerId_; }
@@ -346,6 +439,10 @@ namespace ETHotfix {
         output.WriteRawTag(226, 5);
         output.WriteString(Message);
       }
+      if (baseInfo_ != null) {
+        output.WriteRawTag(234, 5);
+        output.WriteMessage(BaseInfo);
+      }
     }
 
     public int CalculateSize() {
@@ -358,6 +455,9 @@ namespace ETHotfix {
       }
       if (Message.Length != 0) {
         size += 2 + pb::CodedOutputStream.ComputeStringSize(Message);
+      }
+      if (baseInfo_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(BaseInfo);
       }
       if (PlayerId != 0L) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(PlayerId);
@@ -390,6 +490,13 @@ namespace ETHotfix {
           }
           case 738: {
             Message = input.ReadString();
+            break;
+          }
+          case 746: {
+            if (baseInfo_ == null) {
+              baseInfo_ = new global::ETHotfix.Player_Info_Base();
+            }
+            input.ReadMessage(baseInfo_);
             break;
           }
         }

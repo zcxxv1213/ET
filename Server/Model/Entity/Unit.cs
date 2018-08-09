@@ -8,27 +8,33 @@ namespace ETModel
 		Hero,
 		Npc
 	}
-
+    public enum Team
+    {
+        Red,
+        Blue
+    }
 	[ObjectSystem]
-	public class UnitSystem : AwakeSystem<Unit, UnitType>
+	public class UnitSystem : AwakeSystem<Unit, UnitType , Team>
 	{
-		public override void Awake(Unit self, UnitType a)
+		public override void Awake(Unit self, UnitType a,Team t)
 		{
-			self.Awake(a);
+			self.Awake(a,t);
 		}
 	}
 
 	public sealed class Unit: Entity
 	{
 		public UnitType UnitType { get; private set; }
-		
-		[BsonIgnore]
+		public Team mTeam { get; private set; }
+        [BsonIgnore]
 		public Vector3 Position { get; set; }
 		
-		public void Awake(UnitType unitType)
+		public void Awake(UnitType unitType,Team Team)
 		{
 			this.UnitType = unitType;
-		}
+            mTeam = Team;
+
+        }
 
 		public override void Dispose()
 		{

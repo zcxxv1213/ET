@@ -20,7 +20,8 @@ namespace ETHotfix
 				player.UnitId = createUnit.UnitId;
 				response.UnitId = createUnit.UnitId;
 				response.Count = createUnit.Count;
-				reply(response);
+                response.ActorVOs.Add(new ActorVo() { PlayerId = player.Id,NickName = player.Account ,Team = 1});
+                reply(response);
 			}
 			catch (Exception e)
 			{
