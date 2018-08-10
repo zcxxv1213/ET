@@ -36,7 +36,7 @@ namespace ETHotfix
 
                 await timerComponent.WaitAsync(100);
 				
-                MessageHelper.Broadcast(self.FrameMessage);
+               // MessageHelper.Broadcast(self.FrameMessage);
 
                 ++self.Frame;
                 self.FrameMessage = new FrameMessage() { Frame = self.Frame };
