@@ -26,8 +26,9 @@ namespace ETHotfix
                 Game.Scene.GetComponent<PlayerComponent>().Add(player);
 				session.AddComponent<SessionPlayerComponent>().Player = player;
 				session.AddComponent<MailBoxComponent, string>(ActorType.GateSession);
+                response.BaseInfo = new Player_Info_Base() { NickName = player.Account, PlayerId = player.Id };
 
-				response.PlayerId = player.Id;
+                response.PlayerId = player.Id;
 				reply(response);
 
 				//session.Send(new G2C_TestHotfixMessage() { Info = "recv hotfix message success" });
