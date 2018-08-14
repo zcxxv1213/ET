@@ -28,6 +28,12 @@ namespace ETHotfix
 	[Message(HotfixOpcodeServer.M2C_TestActorResponse)]
 	public partial class M2C_TestActorResponse : IActorResponse {}
 
+	[Message(HotfixOpcodeServer.C2M_ReadyStartGame)]
+	public partial class C2M_ReadyStartGame : IActorRequest {}
+
+	[Message(HotfixOpcodeServer.M2C_ReadyStartGame)]
+	public partial class M2C_ReadyStartGame : IActorResponse {}
+
 	[Message(HotfixOpcodeServer.PlayerInfo)]
 	public partial class PlayerInfo : IMessage {}
 
@@ -51,8 +57,10 @@ namespace ETHotfix
 		 public const ushort G2C_TestHotfixMessage = 10007;
 		 public const ushort C2M_TestActorRequest = 10008;
 		 public const ushort M2C_TestActorResponse = 10009;
-		 public const ushort PlayerInfo = 10010;
-		 public const ushort C2G_PlayerInfo = 10011;
-		 public const ushort G2C_PlayerInfo = 10012;
+		 public const ushort C2M_ReadyStartGame = 10010;
+		 public const ushort M2C_ReadyStartGame = 10011;
+		 public const ushort PlayerInfo = 10012;
+		 public const ushort C2G_PlayerInfo = 10013;
+		 public const ushort G2C_PlayerInfo = 10014;
 	}
 }

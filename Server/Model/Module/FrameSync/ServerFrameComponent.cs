@@ -1,6 +1,6 @@
 ﻿namespace ETModel
 {
-	public class ServerFrameComponent: Component
+    public class ServerFrameComponent: Component
 	{
 		public int Frame;
 

@@ -29,7 +29,9 @@ namespace ETModel
         [BsonIgnore]
 		public Vector3 Position { get; set; }
 		
-		public void Awake(UnitType unitType,Team Team)
+        public long mPlayerID { get; set; }
+
+        public void Awake(UnitType unitType,Team Team)
 		{
 			this.UnitType = unitType;
             mTeam = Team;
