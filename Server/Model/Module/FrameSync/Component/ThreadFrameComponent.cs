@@ -7,6 +7,7 @@ namespace ETModel
 {
     public class ThreadFrameComponent : Component
     {
+        WorldEntity mWorldEntity;
         public static int s_intervalTime = 100; //单位毫微秒
         public int FrameRate = 32;
         public int InfluenceResolution = 2;
@@ -17,6 +18,7 @@ namespace ETModel
         private long _playRate = FixedMath.One;
         private int InfluenceCount;
         private long mStartTime;
+        Thread t;
         public int PauseCount { get; private set; }
         public bool IsPaused { get { return PauseCount > 0; } }
         public long PlayRate
@@ -45,17 +47,21 @@ namespace ETModel
             PlayRate = FixedMath.One;
             InfluenceCount = 0;
             PauseCount = 0;
-            Thread t = new Thread(UpdateLogic);
+            t = new Thread(UpdateLogic);
             t.Start();
-            this.UpdateFrameAsync();
         }
-
+        public void SetWorldEntity(WorldEntity w)
+        {
+            mWorldEntity = w;
+        }
         private void UpdateLogic()
         {
             int time = ServiceTime.GetServiceTime();
             int lastTime = ServiceTime.GetServiceTime();
             while (true)
             {
+                if (this.IsDisposed)
+                    break;
                 lastTime = ServiceTime.GetServiceTime();
 
           //      UpdateWorld(DeltaTimeF);
@@ -69,6 +75,13 @@ namespace ETModel
                 }
             }
         }
-
+        public override void Dispose()
+        {
+            if (this.IsDisposed)
+            {
+                return;
+            }
+          
+        }
     }
 }

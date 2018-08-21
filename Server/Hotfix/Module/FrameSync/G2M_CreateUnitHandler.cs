@@ -13,15 +13,22 @@ namespace ETHotfix
 			try
 			{
 				Unit unit = ComponentFactory.Create<Unit,UnitType,Team>(UnitType.Hero,Team.Blue);
-
-				await unit.AddComponent<MailBoxComponent>().AddLocation();
+                WorldEntity worldEntity = ComponentFactory.Create<WorldEntity>();
+                await unit.AddComponent<MailBoxComponent>().AddLocation();
 				unit.AddComponent<UnitGateComponent, long>(message.GateSessionId);
                 unit.mPlayerID = message.PlayerId;
                 Game.Scene.GetComponent<UnitComponent>().Add(unit);
-				response.UnitId = unit.Id;
+                Game.Scene.GetComponent<WorldManagerComponent>().AddWorld(worldEntity);
+                Game.Scene.GetComponent<WorldManagerComponent>().AddUnitToWorld(unit, worldEntity);
+                worldEntity.GetComponent<WorldManagerComponent>().AddWorld(worldEntity);
+                worldEntity.GetComponent<WorldManagerComponent>().AddUnitToWorld(unit, worldEntity);
+                response.UnitId = unit.Id;
 				response.Count = Game.Scene.GetComponent<UnitComponent>().Count;
 				reply(response);
-
+                //TODO 人数达到两人-》Creat;
+                ThreadEntity threadEntity = ComponentFactory.Create<ThreadEntity>();
+                threadEntity.InitWorldEntity(worldEntity);
+                Game.Scene.GetComponent<ThreadComponent>().Add(threadEntity);
                 /*if (response.Count == 2)
 				{
 					Actor_CreateUnits actorCreateUnits = new Actor_CreateUnits();

@@ -12,21 +12,17 @@ namespace ETHotfix
 			G2C_EnterMap response = new G2C_EnterMap();
 			try
 			{
-				Player player = session.GetComponent<SessionPlayerComponent>().Player;
+                //TODO 匹配后再进入地图
+                Player player = session.GetComponent<SessionPlayerComponent>().Player;
 				// 在map服务器上创建战斗Unit
 				IPEndPoint mapAddress = Game.Scene.GetComponent<StartConfigComponent>().MapConfigs[0].GetComponent<InnerConfig>().IPEndPoint;
 				Session mapSession = Game.Scene.GetComponent<NetInnerComponent>().Get(mapAddress);
-                Log.Info("CreatUnit");
 				M2G_CreateUnit createUnit = (M2G_CreateUnit)await mapSession.Call(new G2M_CreateUnit() { PlayerId = player.Id, GateSessionId = session.InstanceId });
 				player.UnitId = createUnit.UnitId;
 				response.UnitId = createUnit.UnitId;
 				response.Count = createUnit.Count;
                 response.ActorVOs.Add(new ActorVo() { PlayerId = player.Id,NickName = player.Account ,Team = 1});
                 reply(response);
-                //TODO 人数达到两人-》Creat;
-                ThreadEntity threadEntity = ComponentFactory.Create<ThreadEntity>();
-                Log.Info("Add");
-                Game.Scene.GetComponent<ThreadComponent>().Add(threadEntity);
             }
 			catch (Exception e)
 			{

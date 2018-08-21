@@ -73,7 +73,8 @@ namespace App
 						break;
 					case AppType.Map:
 						Game.Scene.AddComponent<NetInnerComponent, IPEndPoint>(innerConfig.IPEndPoint);
-						Game.Scene.AddComponent<UnitComponent>();
+						Game.Scene.AddComponent<WorldManagerComponent>();
+                        Game.Scene.AddComponent<UnitComponent>();
                         Game.Scene.AddComponent<ThreadComponent>();
                         Game.Scene.AddComponent<LocationProxyComponent>();
 						Game.Scene.AddComponent<ActorMessageSenderComponent>();
@@ -82,9 +83,10 @@ namespace App
 						break;
 					case AppType.AllServer:
 						Game.Scene.AddComponent<ActorMessageSenderComponent>();
-						Game.Scene.AddComponent<PlayerComponent>();
-                        Game.Scene.AddComponent<ThreadComponent>();
                         Game.Scene.AddComponent<UnitComponent>();
+                        Game.Scene.AddComponent<PlayerComponent>();
+                        Game.Scene.AddComponent<ThreadComponent>();
+                        Game.Scene.AddComponent<WorldManagerComponent>();
 						Game.Scene.AddComponent<DBComponent>();
 						Game.Scene.AddComponent<DBProxyComponent>();
 						Game.Scene.AddComponent<DBCacheComponent>();
