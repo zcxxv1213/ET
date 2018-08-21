@@ -131,4 +131,9 @@
     <Folder Include="Module\Message\Network\TCP\" />
     <Folder Include="Module\Numeric\" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>..\Hotfix\obj\Debug\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

@@ -26,4 +26,9 @@
   <ItemGroup>
     <Folder Include="Module\Http\" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>obj\Debug\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

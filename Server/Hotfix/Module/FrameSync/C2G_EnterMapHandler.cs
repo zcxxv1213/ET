@@ -23,7 +23,11 @@ namespace ETHotfix
 				response.Count = createUnit.Count;
                 response.ActorVOs.Add(new ActorVo() { PlayerId = player.Id,NickName = player.Account ,Team = 1});
                 reply(response);
-			}
+                //TODO 人数达到两人-》Creat;
+                ThreadEntity threadEntity = ComponentFactory.Create<ThreadEntity>();
+                Log.Info("Add");
+                Game.Scene.GetComponent<ThreadComponent>().Add(threadEntity);
+            }
 			catch (Exception e)
 			{
 				ReplyError(response, e, reply);
