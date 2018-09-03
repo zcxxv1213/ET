@@ -13,6 +13,9 @@ namespace ETHotfix
 			try
 			{
 				Unit unit = ComponentFactory.Create<Unit,UnitType,Team>(UnitType.Hero,Team.Blue);
+                unit.AddComponent<MoveComponent>();
+                unit.AddComponent<FrameMoveComponent>();
+
                 WorldEntity worldEntity = ComponentFactory.Create<WorldEntity>();
                 await unit.AddComponent<MailBoxComponent>().AddLocation();
 				unit.AddComponent<UnitGateComponent, long>(message.GateSessionId);
@@ -20,6 +23,7 @@ namespace ETHotfix
                 Game.Scene.GetComponent<UnitComponent>().Add(unit);
                 Game.Scene.GetComponent<WorldManagerComponent>().AddWorld(worldEntity);
                 Game.Scene.GetComponent<WorldManagerComponent>().AddUnitToWorld(unit, worldEntity);
+
                 worldEntity.GetComponent<WorldManagerComponent>().AddWorld(worldEntity);
                 worldEntity.GetComponent<WorldManagerComponent>().AddUnitToWorld(unit, worldEntity);
                 response.UnitId = unit.Id;
@@ -46,8 +50,12 @@ namespace ETHotfix
                     actorCreateUnits.Units.Add(new UnitInfo() { UnitId = u.Id, X = (int)(u.Position.X * 1000), Z = (int)(u.Position.Z * 1000),PlayerId = u.mPlayerID });
                 }
                 MessageHelper.Broadcast(actorCreateUnits);
+                //Test
+                UnitInitMsg msg = new UnitInitMsg();
+                msg.Units.Add(new InitUnitInfo { Id = unit.Id, MoveComponentBytes = ByteString.CopyFrom(ProtobufHelper.ToBytes(unit.GetComponent<FrameMoveComponent>().moveData)) });
+
             }
-			catch (Exception e)
+            catch (Exception e)
 			{
 				ReplyError(response, e, reply);
 			}
