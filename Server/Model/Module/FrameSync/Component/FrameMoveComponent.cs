@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ETModel
 {
+
     public class FrameMoveComponent:Component
     {
         public FrameMoveData moveData = new FrameMoveData();
