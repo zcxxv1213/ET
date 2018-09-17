@@ -8,7 +8,7 @@ namespace ETModel
     public class ThreadFrameComponent : Component
     {
         WorldEntity mWorldEntity;
-        public static int s_intervalTime = 100; //单位毫微秒
+        public static int s_intervalTime = 1000; //单位毫微秒
         public int FrameRate = 32;
         public int InfluenceResolution = 2;
         public long DeltaTime = 0;
@@ -54,6 +54,13 @@ namespace ETModel
         {
             mWorldEntity = w;
         }
+
+        private void UpdateWorld(int deltaTime)
+        {
+            //mWorldEntity.GetComponent<>
+            //Update RollBack System Send Input
+        }
+
         private void UpdateLogic()
         {
             int time = ServiceTime.GetServiceTime();
@@ -62,16 +69,24 @@ namespace ETModel
             {
                 if (this.IsDisposed)
                     break;
-                lastTime = ServiceTime.GetServiceTime();
-
-          //      UpdateWorld(DeltaTimeF);
-
-                time = ServiceTime.GetServiceTime();
-
-                int sleepTime = s_intervalTime - (time - lastTime);
-                if (sleepTime > 0)
+                if (mWorldEntity.ReadyForUpdate() == true)
                 {
-                    Thread.Sleep(sleepTime);
+                    lastTime = ServiceTime.GetServiceTime();
+                    //DeltaTime == 200ms,Todo Change to 100ms
+                    UpdateWorld(s_intervalTime);
+
+                    time = ServiceTime.GetServiceTime();
+
+                    int sleepTime = s_intervalTime - (time - lastTime);
+                    Log.Info(sleepTime.ToString());
+                    if (sleepTime > 0)
+                    {
+                        Thread.Sleep(sleepTime);
+                    }
+                }
+                else
+                {
+                    Thread.Sleep(500);
                 }
             }
         }

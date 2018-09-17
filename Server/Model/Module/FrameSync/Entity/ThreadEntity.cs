@@ -17,18 +17,18 @@ namespace ETModel
     public class ThreadEntity : Entity
     {
         WorldEntity mWorldEntity;
-      //  ThreadFrameComponent mFrameComponent;
+        ThreadFrameComponent mFrameComponent;
         public void Awake()
         {
             Log.Info("AddThreadComponent");
-          //  mFrameComponent = this.AddComponent<ThreadFrameComponent>();
-         //   mFrameComponent.InitComponent();
+            mFrameComponent = this.AddComponent<ThreadFrameComponent>();
+            mFrameComponent.InitComponent();
         }
 
         public void InitWorldEntity(WorldEntity w)
         {
             mWorldEntity = w;
-        //    mFrameComponent.SetWorldEntity(w);
+            mFrameComponent.SetWorldEntity(w);
         }
 
         //TODO移除组件

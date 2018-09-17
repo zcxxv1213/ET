@@ -1680,24 +1680,25 @@ namespace RollBack
                 DoPrediction();
 
                 UpdateNewestConsistentFrame();
-
+                Tick(unnetworkedInputs);
                 /* if (network.IsServer)
                  {
                      Tick(unnetworkedInputs);
                  }*/
-                ClientUpdateTiming(elapsedTime);
+                //     ClientUpdateTiming(elapsedTime);
 
                 // Check we're not about to flood the network.
                 // Note: This limit is still quite high. Could do fancy things like RLE so we don't send
                 //       a huge number of packets when approaching this limit. But probably not worth it.
                 if (CurrentFrame < synchronisedClock.CurrentFrame - InputBroadcastFloodLimit)
                 {
+                    Log.Warning("CurrentFrame<synchronisedClock.CurrentFrame - InputBroadcastFloodLimit");
                   //  network.Disconnect(UserVisibleStrings.GameClockOutOfSync);
                     return;
                 }
 
-                while (CurrentFrame < synchronisedClock.CurrentFrame)
-                    Tick(unnetworkedInputs);
+                /*while (CurrentFrame < synchronisedClock.CurrentFrame)
+                    Tick(unnetworkedInputs);*/
 
                 CleanupBuffers();
             }

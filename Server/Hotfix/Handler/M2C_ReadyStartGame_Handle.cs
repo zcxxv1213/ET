@@ -12,6 +12,11 @@ namespace ETHotfix.Handler
         protected override async Task Run(Unit unit, C2M_ReadyStartGame message, Action<M2C_ReadyStartGame> reply)
         {
             await Task.CompletedTask;
+            WorldEntity w = Game.Scene.GetComponent<WorldManagerComponent>().GetWorldByUnit(unit);
+            if (w!=null)
+            {
+
+            }
             reply(new M2C_ReadyStartGame() { Message = "StartGame" });
         }
     }

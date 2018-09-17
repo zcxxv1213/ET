@@ -24,12 +24,18 @@ namespace ETModel
 
 	public sealed class Unit: Entity
 	{
+        public bool ReadyForUpdate = false;
 		public UnitType UnitType { get; private set; }
 		public Team mTeam { get; private set; }
         [BsonIgnore]
 		public Vector3 Position { get; set; }
 		
         public long mPlayerID { get; set; }
+
+        public void SetUpdateState(bool state)
+        {
+            this.ReadyForUpdate = state;
+        }
 
         public void Awake(UnitType unitType,Team Team)
 		{

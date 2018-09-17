@@ -18,9 +18,23 @@ namespace ETModel
             //RemoveUnit - > Remove World
         }
 
+        public WorldEntity GetWorldByUnit(Unit u)
+        {
+            WorldEntity w = null;
+            if (mWorldDic.TryGetValue(u.Id, out w))
+            {
+                return w;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public void AddUnitToWorld(Unit u,WorldEntity world)
         {
             mWorldDic.Add(u.Id, world);
+            world.AddUnit(u);
         }
         public bool CheckUnitInWorld(Unit u)
         {
