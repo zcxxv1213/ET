@@ -45,14 +45,21 @@ namespace ETHotfix
 				}*/
                 Actor_CreateUnits actorCreateUnits = new Actor_CreateUnits();
                 Unit[] units = Game.Scene.GetComponent<UnitComponent>().GetAll();
+                GameState g = new GameState();
+                worldEntity.SetGameState(g);
                 foreach (Unit u in units)
                 {
+                    g.AddGameUnit(u);
                     actorCreateUnits.Units.Add(new UnitInfo() { UnitId = u.Id, X = (int)(u.Position.X * 1000), Z = (int)(u.Position.Z * 1000), PlayerId = u.mPlayerID });
                 }
                 MessageHelper.Broadcast(actorCreateUnits);
                 //Test
-                UnitInitMsg msg = new UnitInitMsg();
-                msg.Units.Add(new InitUnitInfo { Id = unit.Id, MoveComponentBytes = new MoveInfo() { PosX = unit.GetComponent<FrameMoveComponent>().moveData.posX, PosY = unit.GetComponent<FrameMoveComponent>().moveData.posY } } );
+                UnitSnapshotMsg msg = new UnitSnapshotMsg();
+                msg.Units.Add(new UnitSnatshot { Id = unit.Id, MoveComponentBytes = new MoveInfo() { PosX = unit.GetComponent<FrameMoveComponent>().moveData.posX, PosY = unit.GetComponent<FrameMoveComponent>().moveData.posY }, PlayerIndex = unit.mPlayerIndex, Info = new PeerInfo() {
+                    PlayerName = message.PlayerId.ToString(), InputAssignment = (int)unit.mInputAssignment
+                } });
+                msg.Frame = worldEntity.GetComponent<RollBack.RollbackDriver>().CurrentFrame;
+                Log.Info("CurrentFrame = " + msg.Frame);
                 MessageHelper.Broadcast(msg);
             }
             catch (Exception e)

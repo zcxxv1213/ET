@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using MongoDB.Bson.Serialization.Attributes;
+using RollBack;
 
 namespace ETModel
 {
@@ -24,9 +25,13 @@ namespace ETModel
 
 	public sealed class Unit: Entity
 	{
+        public int mPlayerIndex;
         public bool ReadyForUpdate = false;
 		public UnitType UnitType { get; private set; }
-		public Team mTeam { get; private set; }
+
+        public InputAssignment mInputAssignment { get; set; }
+
+        public Team mTeam { get; private set; }
         [BsonIgnore]
 		public Vector3 Position { get; set; }
 		
@@ -37,6 +42,11 @@ namespace ETModel
             this.ReadyForUpdate = state;
         }
 
+        public void SetPlayerInputIndex(int i)
+        {
+            mPlayerIndex = i;
+        }
+
         public void Awake(UnitType unitType,Team Team)
 		{
 			this.UnitType = unitType;
@@ -44,7 +54,13 @@ namespace ETModel
 
         }
 
-		public override void Dispose()
+        public void SerializeComponentsAndData()
+        {
+
+        }
+
+
+        public override void Dispose()
 		{
 			if (this.IsDisposed)
 			{

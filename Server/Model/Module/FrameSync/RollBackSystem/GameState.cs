@@ -13,6 +13,11 @@ namespace ETModel
         readonly Unit[] players = new Unit[playerCount];
         int frame = 0;
 
+        public void AddGameUnit(Unit u)
+        {
+            players[u.mPlayerIndex] = u;
+        }
+
         public void AfterPrediction()
         {
 

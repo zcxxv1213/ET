@@ -8,6 +8,7 @@ namespace ETModel
     {
         Dictionary<long, WorldEntity> mWorldDic = new Dictionary<long, WorldEntity>();
         List<WorldEntity> mEntityList = new List<WorldEntity>();
+
         public void AddWorld(WorldEntity entity)
         {
             mEntityList.Add(entity);
