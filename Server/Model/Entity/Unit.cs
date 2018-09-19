@@ -54,12 +54,6 @@ namespace ETModel
 
         }
 
-        public void SerializeComponentsAndData()
-        {
-
-        }
-
-
         public override void Dispose()
 		{
 			if (this.IsDisposed)

@@ -24,8 +24,8 @@ namespace ETHotfix
                 Game.Scene.GetComponent<WorldManagerComponent>().AddWorld(worldEntity);
                 Game.Scene.GetComponent<WorldManagerComponent>().AddUnitToWorld(unit, worldEntity);
 
-                worldEntity.GetComponent<WorldManagerComponent>().AddWorld(worldEntity);
-                worldEntity.GetComponent<WorldManagerComponent>().AddUnitToWorld(unit, worldEntity);
+               // worldEntity.GetComponent<WorldManagerComponent>().AddWorld(worldEntity);
+              //  worldEntity.GetComponent<WorldManagerComponent>().AddUnitToWorld(unit, worldEntity);
                 response.UnitId = unit.Id;
                 response.Count = Game.Scene.GetComponent<UnitComponent>().Count;
                 reply(response);

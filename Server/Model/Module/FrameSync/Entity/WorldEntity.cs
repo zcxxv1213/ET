@@ -33,20 +33,29 @@ namespace ETModel {
 
         public void AddUnit(Unit u)
         {
-            mUnitList.Add(u);
-            this.AddUnitWithInputIndex(u);
+            if (!mUnitList.Contains(u))
+            {
+                mUnitList.Add(u);
+                this.AddUnitWithInputIndex(u);
+            }
+            else
+            {
+                Log.Warning("重复添加UnitTo World");
+            }
         }
 
         private void AddUnitWithInputIndex(Unit mUnit)
         {
             Unit U;
-            for (int i = 1; i <= maxInputCount; i++)
+            for (int i = 1; i < maxInputCount; i++)
             {
                 if (mInputIndexDic.TryGetValue(i, out U) == false)
                 {
                     mInputIndexDic[i] = mUnit;
                     mUnit.SetPlayerInputIndex(i);
                     mUnit.mInputAssignment = AssignInput();
+                    Log.Info("InpuAssignmet" + mUnit.mInputAssignment);
+                    return;
                 }
             }
         }

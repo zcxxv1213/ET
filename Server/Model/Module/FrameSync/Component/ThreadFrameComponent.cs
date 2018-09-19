@@ -69,6 +69,8 @@ namespace ETModel
             {
                 if (this.IsDisposed)
                     break;
+
+                Log.Info(mWorldEntity.ReadyForUpdate().ToString());
                 if (mWorldEntity.ReadyForUpdate() == true)
                 {
                     lastTime = ServiceTime.GetServiceTime();
