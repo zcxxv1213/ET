@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using ETHotfix;
 using ETModel;
 
-namespace ETHotfix
+namespace ETModel
 {
 	[ObjectSystem]
 	public class ActorMessageSenderAwakeSystem : AwakeSystem<ActorMessageSender>

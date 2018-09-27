@@ -1467,11 +1467,39 @@ namespace RollBack
             if (!coalescedInput.HasValue || coalescedInput.Value != inputState || coalescedInputCount == coalescedInputMaxCount)
             {
                 // Send:
-              /*  NetOutgoingMessage message = network.CreateMessage();
-                WriteInputHeader(message, InputFormat.Coalesced, CurrentFrame - coalescedInputCount);
-                WriteInputCoalesced(message, coalescedInput, coalescedInputCount, inputState);
-                WriteLocalNCFAndJLE(message);
-                */
+                if (coalescedInput > 0)
+                {
+                    S2CCoalesceInput mS2CMsg = new S2CCoalesceInput()
+                    {
+                        InputFormat = (int)InputFormat.Coalesced,
+                        StartFrame = CurrentFrame - coalescedInputCount,
+                        FirstInputCount = (uint)coalescedInputCount,
+                        FirstInputstateValue = (int)coalescedInput.Value,
+                        LastInputstateValue = (int)inputState,
+                        NewestConsistentFrame = newestConsistentFrame,
+                        LatestJoinLeaveEvent = latestJoinLeaveEvent,
+                        NCFSnapshot = GetHashForSnapshot(newestConsistentFrame)
+                    };
+                }
+                else
+                {
+                    S2CCoalesceInput mS2CMsg = new S2CCoalesceInput()
+                    {
+                        InputFormat = (int)InputFormat.Coalesced,
+                        StartFrame = CurrentFrame - coalescedInputCount,
+                        FirstInputCount = (uint)coalescedInputCount,
+                       // FirstInputstateValue = null,
+                        LastInputstateValue = (int)inputState,
+                        NewestConsistentFrame = newestConsistentFrame,
+                        LatestJoinLeaveEvent = latestJoinLeaveEvent,
+                        NCFSnapshot = GetHashForSnapshot(newestConsistentFrame)
+                    };
+                }
+                /*  NetOutgoingMessage message = network.CreateMessage();
+                  WriteInputHeader(message, InputFormat.Coalesced, CurrentFrame - coalescedInputCount);
+                  WriteInputCoalesced(message, coalescedInput, coalescedInputCount, inputState);
+                  WriteLocalNCFAndJLE(message);
+                  */
                 if (!debugDisableInputBroadcast)
                  //   network.Broadcast(message, NetDeliveryMethod.ReliableUnordered, 0);
 
@@ -1494,6 +1522,7 @@ namespace RollBack
             InputState localInput = unnetworkedInputs[LocalInputSourceIndex];
 
             Debug.Assert(!LocalInputBuffer.ContainsKey(CurrentFrame));
+            Log.Info("ExtractAndBroadcastLocalInput" + "CurrentFrame" + CurrentFrame + "LocalInput" + localInput.ToString());
             LocalInputBuffer.Add(CurrentFrame, localInput);
 
             SendOrCoalesceInput(localInput);
@@ -1661,7 +1690,7 @@ namespace RollBack
 
 
         /// <summary>Important: Call P2PNetwork.Update before calling this method.</summary>
-        public void Update(TimeSpan elapsedTime, MultiInputState unnetworkedInputs)
+        public void Update(MultiInputState unnetworkedInputs)
         {
            /* if (!network.IsApplicationConnected)
                 return; // Nothing to do!*/

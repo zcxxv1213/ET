@@ -15,9 +15,9 @@ namespace ETModel {
     public class WorldEntity : Entity
     {
         GameState mGameState = null;
-        List<Unit> mUnitList = new List<Unit>();
+        public List<Unit> mUnitList = new List<Unit>();
         Dictionary<int, Unit> mInputIndexDic = new Dictionary<int, Unit>();
-        int maxInputCount = 4;
+        public int maxInputCount = 4;
         public void Awake()
         {
             this.AddComponent<WorldManagerComponent>();
@@ -30,13 +30,17 @@ namespace ETModel {
             //TODO 修改
             this.GetComponent<RollbackDriver>().InitialDriver(g,null,4);
         }
+        public void BroadCastMessageToUnitsInWorld(IActorMessage message)
+        {
 
+        }
         public void AddUnit(Unit u)
         {
             if (!mUnitList.Contains(u))
             {
                 mUnitList.Add(u);
                 this.AddUnitWithInputIndex(u);
+                u.SetRollBackDriver(this.GetComponent<RollbackDriver>());
             }
             else
             {

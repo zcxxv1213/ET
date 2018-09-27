@@ -1,6 +1,9 @@
 ﻿using System.Numerics;
 using MongoDB.Bson.Serialization.Attributes;
 using RollBack;
+using RollBack.Input;
+using System;
+using System.Collections.Generic;
 
 namespace ETModel
 {
@@ -25,8 +28,11 @@ namespace ETModel
 
 	public sealed class Unit: Entity
 	{
+        public RollbackDriver mRollebackDriver;
         public int mPlayerIndex;
         public bool ReadyForUpdate = false;
+        Dictionary<int, InputState> mFrameWithInputDic = new Dictionary<int, InputState>();
+        public InputState mNowInpuState = InputState.None;
 		public UnitType UnitType { get; private set; }
 
         public InputAssignment mInputAssignment { get; set; }
@@ -52,6 +58,17 @@ namespace ETModel
 			this.UnitType = unitType;
             mTeam = Team;
 
+        }
+
+        public void AddInputStateWithFrame(InputState state)
+        {
+            mNowInpuState = state;
+            mFrameWithInputDic[mRollebackDriver.CurrentFrame] = state;
+        }
+
+        public void SetRollBackDriver(RollbackDriver d)
+        {
+            mRollebackDriver = d;
         }
 
         public override void Dispose()
