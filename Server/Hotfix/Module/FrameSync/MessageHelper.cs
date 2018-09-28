@@ -5,7 +5,7 @@ namespace ETHotfix
 {
 	public static class MessageHelper
 	{
-		public static void Broadcast(IActorMessage message)
+        public static void Broadcast(IActorMessage message)
 		{
 			Unit[] units = Game.Scene.GetComponent<UnitComponent>().GetAll();
 			ActorMessageSenderComponent actorMessageSenderComponent = Game.Scene.GetComponent<ActorMessageSenderComponent>();

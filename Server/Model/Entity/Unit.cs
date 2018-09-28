@@ -32,6 +32,9 @@ namespace ETModel
         public int mPlayerIndex;
         public bool ReadyForUpdate = false;
         Dictionary<int, InputState> mFrameWithInputDic = new Dictionary<int, InputState>();
+
+        Queue<C2SInputMessage> incomingMessageQueue = new Queue<C2SInputMessage>();
+
         public InputState mNowInpuState = InputState.None;
 		public UnitType UnitType { get; private set; }
 
@@ -58,6 +61,19 @@ namespace ETModel
 			this.UnitType = unitType;
             mTeam = Team;
 
+        }
+
+        public void QueueMessage(C2SInputMessage message)
+        {
+            incomingMessageQueue.Enqueue(message);
+        }
+
+        public C2SInputMessage ReadNetMessage()
+        {
+            if (incomingMessageQueue.Count > 0)
+                return incomingMessageQueue.Dequeue();
+
+            return null;
         }
 
         public void AddInputStateWithFrame(InputState state)
