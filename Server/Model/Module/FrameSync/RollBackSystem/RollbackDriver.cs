@@ -1130,7 +1130,7 @@ namespace RollBack
                     }
                     else // leave
                     {
-                        ReceiveInputRLEKnownLength(inputBuffers[b], lastJoinFrame, frame);
+                       // ReceiveInputRLEKnownLength(inputBuffers[b], lastJoinFrame, frame);
                     }
 
                     join = !join;
@@ -1250,7 +1250,8 @@ namespace RollBack
             }
         }
 
-        InputBuffer LocalInputBuffer
+        //服务器没有InputBuffer
+        /*InputBuffer LocalInputBuffer
         {
             get
             {
@@ -1258,7 +1259,7 @@ namespace RollBack
                // int localInputAssignment = network.LocalPeerInfo.InputAssignment.GetFirstAssignedPlayerIndex();
                 return inputBuffers[localInputAssignment];
             }
-        }
+        }*/
 
 
         MultiInputState GetInputForFrame(int frame)
@@ -1490,11 +1491,6 @@ namespace RollBack
                 }
 
                 this.Dispatch<List<Unit>, S2CCoalesceInput>(EventConstant.SEND_OR_COALESCE_INPUT, mWorldEntity.mUnitList, mS2CMsg);
-                /*  NetOutgoingMessage message = network.CreateMessage();
-                  WriteInputHeader(message, InputFormat.Coalesced, CurrentFrame - coalescedInputCount);
-                  WriteInputCoalesced(message, coalescedInput, coalescedInputCount, inputState);
-                  WriteLocalNCFAndJLE(message);
-                  */
                 if (!debugDisableInputBroadcast)
                  //   network.Broadcast(message, NetDeliveryMethod.ReliableUnordered, 0);
 
@@ -1516,9 +1512,9 @@ namespace RollBack
         {
             InputState localInput = unnetworkedInputs[LocalInputSourceIndex];
 
-            Debug.Assert(!LocalInputBuffer.ContainsKey(CurrentFrame));
+         //   Debug.Assert(!LocalInputBuffer.ContainsKey(CurrentFrame));
             Log.Info("ExtractAndBroadcastLocalInput" + "CurrentFrame" + CurrentFrame + "LocalInput" + localInput.ToString());
-            LocalInputBuffer.Add(CurrentFrame, localInput);
+        //    LocalInputBuffer.Add(CurrentFrame, localInput);
 
             SendOrCoalesceInput(localInput);
         }
