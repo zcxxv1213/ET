@@ -17,9 +17,9 @@ namespace ETModel
     {
         public static void Awake(this BroadcastComponent self)
         {
-            EventDispatcher.Instance.AddEventListener<List<Unit>,S2CCoalesceInput>(EventConstant.SEND_OR_COALESCE_INPUT, Broadcast);
+            EventDispatcher.Instance.AddEventListener<List<Unit>, C2SCoalesceInput>(EventConstant.SEND_OR_COALESCE_INPUT, Broadcast);
         }
-        private static void Broadcast(List<Unit> units, S2CCoalesceInput message)
+        private static void Broadcast(List<Unit> units, C2SCoalesceInput message)
         {
             MessageHelper.Broadcast(units, message);
         }

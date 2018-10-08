@@ -1009,6 +1009,7 @@ namespace RollBack
 
         void HitRemoteNFCOrJLEBackstopFor(int connectionId)
         {
+            Log.Warning("HitRemoteNFCorJLEBackstop");
            /* foreach (RemotePeer remotePeer in network.RemotePeers)
             {
                 if (remotePeer.PeerInfo.ConnectionId == connectionId)
@@ -1151,18 +1152,19 @@ namespace RollBack
         void ReceiveInputRLE(InputBuffer inputBuffer,MessageInputRLE message, int startFrame, out int endFrame)
         {
             endFrame = startFrame;
-
+            int num = 0;
             while (true)
             {
                 int count = 0;
                 InputState inputState = InputState.Input0;
                 try
                 {
-                    count = (int)message.Count;
-                    count = 1;
+                    //有可能越界
+                    count = (int)message.Count[num];
                     if (count == 0) // Terminator
                         return;
-                    inputState = (InputState)message.Inputstate;
+                    inputState = (InputState)message.Inputstate[num];
+                    num += 1;
                 }
                 catch (Exception e) { Debug.LogError("Bad input message (RLE)");  }
 
@@ -1332,7 +1334,7 @@ namespace RollBack
             {
                 game.BeforePrediction();
                 //TODO 反序列化
-             //   game.Deserialize(snapshotBuffer[predictionDirtyFrame - 1]);
+                game.DeSerialize(snapshotBuffer[predictionDirtyFrame - 1]);
             }
 
 
@@ -1347,7 +1349,7 @@ namespace RollBack
                 // Save the state that we predicted (so we can reload and predict from it later)
                 // TODO: Pool the snapshot objects that we are replacing here!
                 //反序列化
-              //  snapshotBuffer[frame] = game.Serialize();
+                snapshotBuffer[frame] = game.Serialize();
                 hashBuffer.Remove(frame);
             }
 
@@ -1467,7 +1469,7 @@ namespace RollBack
             if (!coalescedInput.HasValue || coalescedInput.Value != inputState || coalescedInputCount == coalescedInputMaxCount)
             {
                 // Send:
-                S2CCoalesceInput mS2CMsg = new S2CCoalesceInput();
+                C2SCoalesceInput mS2CMsg = new C2SCoalesceInput();
                 if (coalescedInput > 0)
                 {
                     mS2CMsg.InputFormat = (int)InputFormat.Coalesced;
@@ -1490,7 +1492,7 @@ namespace RollBack
                     mS2CMsg.NCFSnapshot = GetHashForSnapshot(newestConsistentFrame);
                 }
 
-                this.Dispatch<List<Unit>, S2CCoalesceInput>(EventConstant.SEND_OR_COALESCE_INPUT, mWorldEntity.mUnitList, mS2CMsg);
+                this.Dispatch<List<Unit>, C2SCoalesceInput>(EventConstant.SEND_OR_COALESCE_INPUT, mWorldEntity.mUnitList, mS2CMsg);
                 if (!debugDisableInputBroadcast)
                  //   network.Broadcast(message, NetDeliveryMethod.ReliableUnordered, 0);
 
@@ -1517,6 +1519,7 @@ namespace RollBack
         //    LocalInputBuffer.Add(CurrentFrame, localInput);
 
             SendOrCoalesceInput(localInput);
+            //发送收集到的所有人的操作
         }
 
 
@@ -1580,14 +1583,14 @@ namespace RollBack
 
 
         /// <summary>Read an input message (with a header) into the given input buffer.</summary>
-        void ReceiveInputMessage( Unit u,InputBuffer inputBuffer,C2SInputMessage message)
+        void ReceiveInputMessage( Unit u,InputBuffer inputBuffer, C2SCoalesceInput message)
         {
             bool isRLE = false;
             int frame = 1;
             try
             {
-                isRLE = message.IsRLE;
-                frame = message.Frame;
+                isRLE = message.InputFormat != (int)InputFormat.Coalesced;
+                frame = message.StartFrame;
             }
             catch (Exception e) { Debug.LogError("Bad input message"); }
 
@@ -1601,12 +1604,22 @@ namespace RollBack
             int frameAfterRemoteCurrentFrame = 0;
             if (isRLE)
             {
-                ReceiveInputRLE(inputBuffer, message.InputRLE, frame, out frameAfterRemoteCurrentFrame);
+                //修改InputRLE
+                ReceiveInputRLE(inputBuffer, message.MyMessageInputRLE, frame, out frameAfterRemoteCurrentFrame);
             }
             else
             {
-                ReceiveInputCoalesced(inputBuffer, message.InputCoalesced, frame, out frameAfterRemoteCurrentFrame);
-                ReceiveRemoteNCFAndJLE(u, frame, message.ReceiveRemoteNCFAndJLE);
+                MessageInputCoalesced inputCoalesced = new MessageInputCoalesced();
+                inputCoalesced.FirstInput = message.FirstInputstateValue;
+                inputCoalesced.FirstInputCount = (int)message.FirstInputCount;
+                inputCoalesced.LastInput = message.LastInputstateValue;
+                ReceiveInputCoalesced(inputBuffer, inputCoalesced, frame, out frameAfterRemoteCurrentFrame);
+
+                MessageReceiveRemoteNCFAndJLE messageNCFAndJLE = new MessageReceiveRemoteNCFAndJLE();
+                messageNCFAndJLE.ReceivedJLE = message.LatestJoinLeaveEvent;
+                messageNCFAndJLE.ReceivedNCF = message.NewestConsistentFrame;
+                messageNCFAndJLE.ReceivedHash = (int)message.NCFSnapshot;
+                ReceiveRemoteNCFAndJLE(u, frame, messageNCFAndJLE);
             }
 
             if (frameAfterRemoteCurrentFrame - 1 > CurrentFrame + InputExcessFrontstop)
@@ -1644,29 +1657,42 @@ namespace RollBack
 
 
         #region Update
+        Dictionary<long,C2SCoalesceInput> listS2CCoalesceInput = new Dictionary<long,C2SCoalesceInput>();
 
         void ReadAllNetworkMessages()
         {
+            listS2CCoalesceInput.Clear();
             foreach (var v in mWorldEntity.mUnitList)
             {
                 InputBuffer inputBuffer = inputBuffers[v.mInputAssignment.GetFirstAssignedPlayerIndex()];
-                C2SInputMessage message;
+                C2SCoalesceInput message;
                 while ((message = v.ReadNetMessage()) != null)
                 {
-                    if (message.SequenceChannel == 0)
+                    //收到都是有序的消息
+                    listS2CCoalesceInput[v.Id] = message;
+                    ReceiveInputMessage(v, inputBuffer, message);
+                   /* if (message.SequenceChannel == 0)
                     {
-                        ReceiveInputMessage(v, inputBuffer, message);
-                    }
-                    else if (message.SequenceChannel == desyncDumpChannel)
+                        
+                    }*/
+                   /* else if (message.SequenceChannel == desyncDumpChannel)
                     {
                         ReceiveDesyncDebug(v, message.ReceiveDesyncDebug);
-                    }
-                    else
+                    }*/
+                    /*else
                     {
                         Log.Error("Message received on unused channel from    " + v.mPlayerID);
-                    }
+                    }*/
                 }
             }
+            S2CCoalesceInput messageS2CCoalesceInput = new S2CCoalesceInput();
+            foreach (var k in listS2CCoalesceInput)
+            {
+              //  messageS2CCoalesceInput.InputFormat.Add(k.InputFormat);
+              //  messageS2CCoalesceInput.Frame.Add(k.StartFrame);
+             //   messageS2CCoalesceInput.MyMessageInputRLE.Add(k.MyMessageInputRLE);
+            }
+            this.Dispatch<List<Unit>, S2CCoalesceInput>(EventConstant.SEND_OR_COALESCE_INPUT, mWorldEntity.mUnitList, messageS2CCoalesceInput);
         }
 
 
@@ -1686,7 +1712,7 @@ namespace RollBack
 
                 CheckRemoteNCFAndJLEBackstop();
 
-                DoPrediction();
+           //     DoPrediction();
 
                 UpdateNewestConsistentFrame();
                 Tick(unnetworkedInputs);
@@ -1760,7 +1786,7 @@ namespace RollBack
                 Debug.Assert(!snapshotBuffer.ContainsKey(CurrentSimulationFrame)); // First time adding this frame
                 Debug.Assert(!hashBuffer.ContainsKey(CurrentSimulationFrame)); // First time adding this frame
                 //反序列化
-                //snapshotBuffer[CurrentSimulationFrame] = game.Serialize();
+                snapshotBuffer[CurrentSimulationFrame] = game.Serialize();
             }
         }
 
