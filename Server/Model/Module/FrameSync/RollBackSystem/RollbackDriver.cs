@@ -1688,9 +1688,8 @@ namespace RollBack
             S2CCoalesceInput messageS2CCoalesceInput = new S2CCoalesceInput();
             foreach (var k in listS2CCoalesceInput)
             {
-              //  messageS2CCoalesceInput.InputFormat.Add(k.InputFormat);
-              //  messageS2CCoalesceInput.Frame.Add(k.StartFrame);
-             //   messageS2CCoalesceInput.MyMessageInputRLE.Add(k.MyMessageInputRLE);
+                messageS2CCoalesceInput.UnitID.Add(k.Key);
+                messageS2CCoalesceInput.MC2SCoalesceInputs.Add(k.Value);
             }
             this.Dispatch<List<Unit>, S2CCoalesceInput>(EventConstant.SEND_OR_COALESCE_INPUT, mWorldEntity.mUnitList, messageS2CCoalesceInput);
         }
