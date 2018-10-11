@@ -31,7 +31,7 @@ namespace ETHotfix
 		public static async Task Lock(this LocationProxyComponent self, long key, long instanceId, int time = 1000)
 		{
 			Session session = Game.Scene.GetComponent<NetInnerComponent>().Get(self.LocationAddress);
-			await session.Call(new ObjectLockRequest() { Key = key, InstanceId = instanceId, Time = time });
+			await session.Call(new ObjectLockRequest() { Key = key, InstanceId = instanceId, mLockTime = time });
 		}
 
 		public static async Task UnLock(this LocationProxyComponent self, long key, long oldInstanceId, long instanceId)

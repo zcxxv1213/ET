@@ -21,6 +21,14 @@ namespace ETHotfix {
       }
     }
 
+    private long time_;
+    public long Time {
+      get { return time_; }
+      set {
+        time_ = value;
+      }
+    }
+
     private long playerId_;
     public long PlayerId {
       get { return playerId_; }
@@ -50,12 +58,19 @@ namespace ETHotfix {
         output.WriteRawTag(226, 5);
         output.WriteString(NickName);
       }
+      if (Time != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Time);
+      }
     }
 
     public int CalculateSize() {
       int size = 0;
       if (RpcId != 0) {
         size += 2 + pb::CodedOutputStream.ComputeInt32Size(RpcId);
+      }
+      if (Time != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Time);
       }
       if (PlayerId != 0L) {
         size += 2 + pb::CodedOutputStream.ComputeInt64Size(PlayerId);
@@ -70,6 +85,7 @@ namespace ETHotfix {
       rpcId_ = 0;
       playerId_ = 0;
       nickName_ = "";
+      time_ = 0;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -88,6 +104,10 @@ namespace ETHotfix {
             NickName = input.ReadString();
             break;
           }
+          case 752: {
+            Time = input.ReadInt64();
+            break;
+          }
         }
       }
     }
@@ -103,6 +123,14 @@ namespace ETHotfix {
       get { return rpcId_; }
       set {
         rpcId_ = value;
+      }
+    }
+
+    private long time_;
+    public long Time {
+      get { return time_; }
+      set {
+        time_ = value;
       }
     }
 
@@ -141,12 +169,19 @@ namespace ETHotfix {
         output.WriteRawTag(208, 5);
         output.WriteInt32(RpcId);
       }
+      if (Time != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Time);
+      }
     }
 
     public int CalculateSize() {
       int size = 0;
       if (RpcId != 0) {
         size += 2 + pb::CodedOutputStream.ComputeInt32Size(RpcId);
+      }
+      if (Time != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Time);
       }
       if (Account.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Account);
@@ -161,6 +196,7 @@ namespace ETHotfix {
       account_ = "";
       password_ = "";
       rpcId_ = 0;
+      time_ = 0;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -177,6 +213,10 @@ namespace ETHotfix {
           }
           case 720: {
             RpcId = input.ReadInt32();
+            break;
+          }
+          case 752: {
+            Time = input.ReadInt64();
             break;
           }
         }
@@ -202,6 +242,14 @@ namespace ETHotfix {
       get { return error_; }
       set {
         error_ = value;
+      }
+    }
+
+    private long time_;
+    public long Time {
+      get { return time_; }
+      set {
+        time_ = value;
       }
     }
 
@@ -250,6 +298,10 @@ namespace ETHotfix {
         output.WriteRawTag(226, 5);
         output.WriteString(Message);
       }
+      if (Time != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Time);
+      }
     }
 
     public int CalculateSize() {
@@ -259,6 +311,9 @@ namespace ETHotfix {
       }
       if (Error != 0) {
         size += 2 + pb::CodedOutputStream.ComputeInt32Size(Error);
+      }
+      if (Time != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Time);
       }
       if (Message.Length != 0) {
         size += 2 + pb::CodedOutputStream.ComputeStringSize(Message);
@@ -278,6 +333,7 @@ namespace ETHotfix {
       rpcId_ = 0;
       error_ = 0;
       message_ = "";
+      time_ = 0;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -304,6 +360,10 @@ namespace ETHotfix {
             Message = input.ReadString();
             break;
           }
+          case 752: {
+            Time = input.ReadInt64();
+            break;
+          }
         }
       }
     }
@@ -319,6 +379,14 @@ namespace ETHotfix {
       get { return rpcId_; }
       set {
         rpcId_ = value;
+      }
+    }
+
+    private long time_;
+    public long Time {
+      get { return time_; }
+      set {
+        time_ = value;
       }
     }
 
@@ -342,12 +410,19 @@ namespace ETHotfix {
         output.WriteRawTag(208, 5);
         output.WriteInt32(RpcId);
       }
+      if (Time != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Time);
+      }
     }
 
     public int CalculateSize() {
       int size = 0;
       if (RpcId != 0) {
         size += 2 + pb::CodedOutputStream.ComputeInt32Size(RpcId);
+      }
+      if (Time != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Time);
       }
       if (Key != 0L) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(Key);
@@ -358,6 +433,7 @@ namespace ETHotfix {
     public void MergeFrom(pb::CodedInputStream input) {
       key_ = 0;
       rpcId_ = 0;
+      time_ = 0;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -370,6 +446,10 @@ namespace ETHotfix {
           }
           case 720: {
             RpcId = input.ReadInt32();
+            break;
+          }
+          case 752: {
+            Time = input.ReadInt64();
             break;
           }
         }
@@ -414,6 +494,14 @@ namespace ETHotfix {
       }
     }
 
+    private long time_;
+    public long Time {
+      get { return time_; }
+      set {
+        time_ = value;
+      }
+    }
+
     private long playerId_;
     public long PlayerId {
       get { return playerId_; }
@@ -443,6 +531,10 @@ namespace ETHotfix {
         output.WriteRawTag(234, 5);
         output.WriteMessage(BaseInfo);
       }
+      if (Time != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Time);
+      }
     }
 
     public int CalculateSize() {
@@ -459,6 +551,9 @@ namespace ETHotfix {
       if (baseInfo_ != null) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(BaseInfo);
       }
+      if (Time != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Time);
+      }
       if (PlayerId != 0L) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(PlayerId);
       }
@@ -470,6 +565,7 @@ namespace ETHotfix {
       rpcId_ = 0;
       error_ = 0;
       message_ = "";
+      time_ = 0;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -499,6 +595,10 @@ namespace ETHotfix {
             input.ReadMessage(baseInfo_);
             break;
           }
+          case 752: {
+            Time = input.ReadInt64();
+            break;
+          }
         }
       }
     }
@@ -517,10 +617,22 @@ namespace ETHotfix {
       }
     }
 
+    private long time_;
+    public long Time {
+      get { return time_; }
+      set {
+        time_ = value;
+      }
+    }
+
     public void WriteTo(pb::CodedOutputStream output) {
       if (Info.Length != 0) {
         output.WriteRawTag(10);
         output.WriteString(Info);
+      }
+      if (Time != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Time);
       }
     }
 
@@ -529,11 +641,15 @@ namespace ETHotfix {
       if (Info.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Info);
       }
+      if (Time != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Time);
+      }
       return size;
     }
 
     public void MergeFrom(pb::CodedInputStream input) {
       info_ = "";
+      time_ = 0;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -542,6 +658,10 @@ namespace ETHotfix {
             break;
           case 10: {
             Info = input.ReadString();
+            break;
+          }
+          case 752: {
+            Time = input.ReadInt64();
             break;
           }
         }
@@ -562,10 +682,22 @@ namespace ETHotfix {
       }
     }
 
+    private long time_;
+    public long Time {
+      get { return time_; }
+      set {
+        time_ = value;
+      }
+    }
+
     public void WriteTo(pb::CodedOutputStream output) {
       if (Info.Length != 0) {
         output.WriteRawTag(10);
         output.WriteString(Info);
+      }
+      if (Time != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Time);
       }
     }
 
@@ -574,11 +706,15 @@ namespace ETHotfix {
       if (Info.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Info);
       }
+      if (Time != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Time);
+      }
       return size;
     }
 
     public void MergeFrom(pb::CodedInputStream input) {
       info_ = "";
+      time_ = 0;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -587,6 +723,10 @@ namespace ETHotfix {
             break;
           case 10: {
             Info = input.ReadString();
+            break;
+          }
+          case 752: {
+            Time = input.ReadInt64();
             break;
           }
         }
@@ -615,6 +755,14 @@ namespace ETHotfix {
       }
     }
 
+    private long time_;
+    public long Time {
+      get { return time_; }
+      set {
+        time_ = value;
+      }
+    }
+
     private string info_ = "";
     public string Info {
       get { return info_; }
@@ -636,6 +784,10 @@ namespace ETHotfix {
         output.WriteRawTag(216, 5);
         output.WriteInt64(ActorId);
       }
+      if (Time != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Time);
+      }
     }
 
     public int CalculateSize() {
@@ -645,6 +797,9 @@ namespace ETHotfix {
       }
       if (ActorId != 0L) {
         size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
+      }
+      if (Time != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Time);
       }
       if (Info.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Info);
@@ -656,6 +811,7 @@ namespace ETHotfix {
       info_ = "";
       rpcId_ = 0;
       actorId_ = 0;
+      time_ = 0;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -672,6 +828,10 @@ namespace ETHotfix {
           }
           case 728: {
             ActorId = input.ReadInt64();
+            break;
+          }
+          case 752: {
+            Time = input.ReadInt64();
             break;
           }
         }
@@ -708,6 +868,14 @@ namespace ETHotfix {
       }
     }
 
+    private long time_;
+    public long Time {
+      get { return time_; }
+      set {
+        time_ = value;
+      }
+    }
+
     private string info_ = "";
     public string Info {
       get { return info_; }
@@ -733,6 +901,10 @@ namespace ETHotfix {
         output.WriteRawTag(226, 5);
         output.WriteString(Message);
       }
+      if (Time != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Time);
+      }
     }
 
     public int CalculateSize() {
@@ -746,6 +918,9 @@ namespace ETHotfix {
       if (Message.Length != 0) {
         size += 2 + pb::CodedOutputStream.ComputeStringSize(Message);
       }
+      if (Time != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Time);
+      }
       if (Info.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Info);
       }
@@ -757,6 +932,7 @@ namespace ETHotfix {
       rpcId_ = 0;
       error_ = 0;
       message_ = "";
+      time_ = 0;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -777,6 +953,10 @@ namespace ETHotfix {
           }
           case 738: {
             Message = input.ReadString();
+            break;
+          }
+          case 752: {
+            Time = input.ReadInt64();
             break;
           }
         }
@@ -805,6 +985,14 @@ namespace ETHotfix {
       }
     }
 
+    private long time_;
+    public long Time {
+      get { return time_; }
+      set {
+        time_ = value;
+      }
+    }
+
     public void WriteTo(pb::CodedOutputStream output) {
       if (RpcId != 0) {
         output.WriteRawTag(208, 5);
@@ -813,6 +1001,10 @@ namespace ETHotfix {
       if (ActorId != 0L) {
         output.WriteRawTag(216, 5);
         output.WriteInt64(ActorId);
+      }
+      if (Time != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Time);
       }
     }
 
@@ -824,12 +1016,16 @@ namespace ETHotfix {
       if (ActorId != 0L) {
         size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
       }
+      if (Time != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Time);
+      }
       return size;
     }
 
     public void MergeFrom(pb::CodedInputStream input) {
       rpcId_ = 0;
       actorId_ = 0;
+      time_ = 0;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -842,6 +1038,10 @@ namespace ETHotfix {
           }
           case 728: {
             ActorId = input.ReadInt64();
+            break;
+          }
+          case 752: {
+            Time = input.ReadInt64();
             break;
           }
         }
@@ -878,6 +1078,14 @@ namespace ETHotfix {
       }
     }
 
+    private long time_;
+    public long Time {
+      get { return time_; }
+      set {
+        time_ = value;
+      }
+    }
+
     public void WriteTo(pb::CodedOutputStream output) {
       if (RpcId != 0) {
         output.WriteRawTag(208, 5);
@@ -890,6 +1098,10 @@ namespace ETHotfix {
       if (Message.Length != 0) {
         output.WriteRawTag(226, 5);
         output.WriteString(Message);
+      }
+      if (Time != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Time);
       }
     }
 
@@ -904,6 +1116,9 @@ namespace ETHotfix {
       if (Message.Length != 0) {
         size += 2 + pb::CodedOutputStream.ComputeStringSize(Message);
       }
+      if (Time != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Time);
+      }
       return size;
     }
 
@@ -911,6 +1126,7 @@ namespace ETHotfix {
       rpcId_ = 0;
       error_ = 0;
       message_ = "";
+      time_ = 0;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -927,6 +1143,10 @@ namespace ETHotfix {
           }
           case 738: {
             Message = input.ReadString();
+            break;
+          }
+          case 752: {
+            Time = input.ReadInt64();
             break;
           }
         }
@@ -947,10 +1167,22 @@ namespace ETHotfix {
       }
     }
 
+    private long time_;
+    public long Time {
+      get { return time_; }
+      set {
+        time_ = value;
+      }
+    }
+
     public void WriteTo(pb::CodedOutputStream output) {
       if (RpcId != 0) {
         output.WriteRawTag(208, 5);
         output.WriteInt32(RpcId);
+      }
+      if (Time != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Time);
       }
     }
 
@@ -959,11 +1191,15 @@ namespace ETHotfix {
       if (RpcId != 0) {
         size += 2 + pb::CodedOutputStream.ComputeInt32Size(RpcId);
       }
+      if (Time != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Time);
+      }
       return size;
     }
 
     public void MergeFrom(pb::CodedInputStream input) {
       rpcId_ = 0;
+      time_ = 0;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -972,6 +1208,10 @@ namespace ETHotfix {
             break;
           case 720: {
             RpcId = input.ReadInt32();
+            break;
+          }
+          case 752: {
+            Time = input.ReadInt64();
             break;
           }
         }
@@ -992,10 +1232,22 @@ namespace ETHotfix {
       }
     }
 
+    private long time_;
+    public long Time {
+      get { return time_; }
+      set {
+        time_ = value;
+      }
+    }
+
     public void WriteTo(pb::CodedOutputStream output) {
       if (RpcId != 0) {
         output.WriteRawTag(208, 5);
         output.WriteInt32(RpcId);
+      }
+      if (Time != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Time);
       }
     }
 
@@ -1004,11 +1256,15 @@ namespace ETHotfix {
       if (RpcId != 0) {
         size += 2 + pb::CodedOutputStream.ComputeInt32Size(RpcId);
       }
+      if (Time != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Time);
+      }
       return size;
     }
 
     public void MergeFrom(pb::CodedInputStream input) {
       rpcId_ = 0;
+      time_ = 0;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -1017,6 +1273,10 @@ namespace ETHotfix {
             break;
           case 720: {
             RpcId = input.ReadInt32();
+            break;
+          }
+          case 752: {
+            Time = input.ReadInt64();
             break;
           }
         }
@@ -1053,6 +1313,14 @@ namespace ETHotfix {
       }
     }
 
+    private long time_;
+    public long Time {
+      get { return time_; }
+      set {
+        time_ = value;
+      }
+    }
+
     private global::ETHotfix.PlayerInfo playerInfos_;
     public global::ETHotfix.PlayerInfo PlayerInfos {
       get { return playerInfos_; }
@@ -1078,6 +1346,10 @@ namespace ETHotfix {
         output.WriteRawTag(226, 5);
         output.WriteString(Message);
       }
+      if (Time != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Time);
+      }
     }
 
     public int CalculateSize() {
@@ -1091,6 +1363,9 @@ namespace ETHotfix {
       if (Message.Length != 0) {
         size += 2 + pb::CodedOutputStream.ComputeStringSize(Message);
       }
+      if (Time != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Time);
+      }
       if (playerInfos_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(PlayerInfos);
       }
@@ -1101,6 +1376,7 @@ namespace ETHotfix {
       rpcId_ = 0;
       error_ = 0;
       message_ = "";
+      time_ = 0;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -1124,6 +1400,10 @@ namespace ETHotfix {
           }
           case 738: {
             Message = input.ReadString();
+            break;
+          }
+          case 752: {
+            Time = input.ReadInt64();
             break;
           }
         }

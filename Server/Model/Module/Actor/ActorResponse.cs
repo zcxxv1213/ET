@@ -11,5 +11,6 @@
 		public int Error { get; set; }
 
 		public string Message { get; set; }
-	}
+        public long Time { get; set; }
+    }
 }

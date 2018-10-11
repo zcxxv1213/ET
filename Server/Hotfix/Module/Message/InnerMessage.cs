@@ -10,6 +10,8 @@ namespace ETHotfix
 	{
 		public int RpcId { get; set; }
 
+		public long Time { get; set; }
+
 		public Unit Unit { get; set; }
 
 	}
@@ -23,6 +25,8 @@ namespace ETHotfix
 
 		public string Message { get; set; }
 
+		public long Time { get; set; }
+
 		public long InstanceId { get; set; }
 
 	}
@@ -31,6 +35,8 @@ namespace ETHotfix
 	public partial class M2A_Reload: IRequest
 	{
 		public int RpcId { get; set; }
+
+		public long Time { get; set; }
 
 	}
 
@@ -41,6 +47,8 @@ namespace ETHotfix
 
 		public int Error { get; set; }
 
+		public long Time { get; set; }
+
 		public string Message { get; set; }
 
 	}
@@ -49,6 +57,8 @@ namespace ETHotfix
 	public partial class G2G_LockRequest: IRequest
 	{
 		public int RpcId { get; set; }
+
+		public long Time { get; set; }
 
 		public long Id { get; set; }
 
@@ -65,12 +75,16 @@ namespace ETHotfix
 
 		public string Message { get; set; }
 
+		public long Time { get; set; }
+
 	}
 
 	[Message(InnerOpcode.G2G_LockReleaseRequest)]
 	public partial class G2G_LockReleaseRequest: IRequest
 	{
 		public int RpcId { get; set; }
+
+		public long Time { get; set; }
 
 		public long Id { get; set; }
 
@@ -87,12 +101,16 @@ namespace ETHotfix
 
 		public string Message { get; set; }
 
+		public long Time { get; set; }
+
 	}
 
 	[Message(InnerOpcode.DBSaveRequest)]
 	public partial class DBSaveRequest: IRequest
 	{
 		public int RpcId { get; set; }
+
+		public long Time { get; set; }
 
 		public bool NeedCache { get; set; }
 
@@ -111,12 +129,16 @@ namespace ETHotfix
 
 		public string Message { get; set; }
 
+		public long Time { get; set; }
+
 	}
 
 	[Message(InnerOpcode.DBSaveBatchRequest)]
 	public partial class DBSaveBatchRequest: IRequest
 	{
 		public int RpcId { get; set; }
+
+		public long Time { get; set; }
 
 		public bool NeedCache { get; set; }
 
@@ -135,12 +157,16 @@ namespace ETHotfix
 
 		public string Message { get; set; }
 
+		public long Time { get; set; }
+
 	}
 
 	[Message(InnerOpcode.DBQueryRequest)]
 	public partial class DBQueryRequest: IRequest
 	{
 		public int RpcId { get; set; }
+
+		public long Time { get; set; }
 
 		public long Id { get; set; }
 
@@ -159,6 +185,8 @@ namespace ETHotfix
 
 		public string Message { get; set; }
 
+		public long Time { get; set; }
+
 		public ComponentWithId Component { get; set; }
 
 	}
@@ -167,6 +195,8 @@ namespace ETHotfix
 	public partial class DBQueryBatchRequest: IRequest
 	{
 		public int RpcId { get; set; }
+
+		public long Time { get; set; }
 
 		public string CollectionName { get; set; }
 
@@ -185,6 +215,8 @@ namespace ETHotfix
 
 		public string Message { get; set; }
 
+		public long Time { get; set; }
+
 		public List<ComponentWithId> Components = new List<ComponentWithId>();
 
 	}
@@ -193,6 +225,8 @@ namespace ETHotfix
 	public partial class DBQueryJsonRequest: IRequest
 	{
 		public int RpcId { get; set; }
+
+		public long Time { get; set; }
 
 		public string CollectionName { get; set; }
 
@@ -209,6 +243,8 @@ namespace ETHotfix
 
 		public string Message { get; set; }
 
+		public long Time { get; set; }
+
 		public List<ComponentWithId> Components = new List<ComponentWithId>();
 
 	}
@@ -217,6 +253,8 @@ namespace ETHotfix
 	public partial class ObjectAddRequest: IRequest
 	{
 		public int RpcId { get; set; }
+
+		public long Time { get; set; }
 
 		public long Key { get; set; }
 
@@ -233,12 +271,16 @@ namespace ETHotfix
 
 		public string Message { get; set; }
 
+		public long Time { get; set; }
+
 	}
 
 	[Message(InnerOpcode.ObjectRemoveRequest)]
 	public partial class ObjectRemoveRequest: IRequest
 	{
 		public int RpcId { get; set; }
+
+		public long Time { get; set; }
 
 		public long Key { get; set; }
 
@@ -253,6 +295,8 @@ namespace ETHotfix
 
 		public string Message { get; set; }
 
+		public long Time { get; set; }
+
 	}
 
 	[Message(InnerOpcode.ObjectLockRequest)]
@@ -260,11 +304,13 @@ namespace ETHotfix
 	{
 		public int RpcId { get; set; }
 
+		public long Time { get; set; }
+
 		public long Key { get; set; }
 
 		public long InstanceId { get; set; }
 
-		public int Time { get; set; }
+		public int mLockTime { get; set; }
 
 	}
 
@@ -277,12 +323,16 @@ namespace ETHotfix
 
 		public string Message { get; set; }
 
+		public long Time { get; set; }
+
 	}
 
 	[Message(InnerOpcode.ObjectUnLockRequest)]
 	public partial class ObjectUnLockRequest: IRequest
 	{
 		public int RpcId { get; set; }
+
+		public long Time { get; set; }
 
 		public long Key { get; set; }
 
@@ -301,12 +351,16 @@ namespace ETHotfix
 
 		public string Message { get; set; }
 
+		public long Time { get; set; }
+
 	}
 
 	[Message(InnerOpcode.ObjectGetRequest)]
 	public partial class ObjectGetRequest: IRequest
 	{
 		public int RpcId { get; set; }
+
+		public long Time { get; set; }
 
 		public long Key { get; set; }
 
@@ -321,6 +375,8 @@ namespace ETHotfix
 
 		public string Message { get; set; }
 
+		public long Time { get; set; }
+
 		public long InstanceId { get; set; }
 
 	}
@@ -329,6 +385,8 @@ namespace ETHotfix
 	public partial class R2G_GetLoginKey: IRequest
 	{
 		public int RpcId { get; set; }
+
+		public long Time { get; set; }
 
 		public string Account { get; set; }
 
@@ -343,6 +401,8 @@ namespace ETHotfix
 
 		public string Message { get; set; }
 
+		public long Time { get; set; }
+
 		public long Key { get; set; }
 
 	}
@@ -351,6 +411,8 @@ namespace ETHotfix
 	public partial class G2M_CreateUnit: IRequest
 	{
 		public int RpcId { get; set; }
+
+		public long Time { get; set; }
 
 		public long PlayerId { get; set; }
 
@@ -367,6 +429,8 @@ namespace ETHotfix
 
 		public string Message { get; set; }
 
+		public long Time { get; set; }
+
 		public long UnitId { get; set; }
 
 		public int Count { get; set; }
@@ -379,6 +443,8 @@ namespace ETHotfix
 		public int RpcId { get; set; }
 
 		public long ActorId { get; set; }
+
+		public long Time { get; set; }
 
 	}
 
