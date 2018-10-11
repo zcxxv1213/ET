@@ -236,7 +236,8 @@ namespace ETModel
 
 		public void Send(IMessage message)
 		{
-			this.Send(0x00, message);
+            message.Time = TimeHelper.GetCurrentTimeUnix();
+            this.Send(0x00, message);
 		}
 
 		public void Reply(IResponse message)
