@@ -50,7 +50,7 @@ namespace ETHotfix
                 foreach (Unit u in units)
                 {
                     g.AddGameUnit(u);
-                    actorCreateUnits.Units.Add(new UnitInfo() { UnitId = u.Id, X = (int)(u.Position.X * 1000), Z = (int)(u.Position.Z * 1000), PlayerId = u.mPlayerID });
+                    actorCreateUnits.Units.Add(new UnitInfo() { UnitId = u.Id, X = (int)(u.Position.x * 1000), Z = (int)(u.Position.z * 1000), PlayerId = u.mPlayerID });
                 }
                 MessageHelper.Broadcast(actorCreateUnits);
                 //Test

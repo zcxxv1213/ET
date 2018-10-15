@@ -4,6 +4,7 @@ using RollBack.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
 namespace ETModel
 {
@@ -38,10 +39,11 @@ namespace ETModel
         public InputState mNowInpuState = InputState.None;
 		public UnitType UnitType { get; private set; }
 
+        List<KeyCode> allInputList = new List<KeyCode>();
         public InputAssignment mInputAssignment { get; set; }
 
         public Team mTeam { get; private set; }
-		public Vector3 Position { get; set; }
+		public UnityEngine.Vector3 Position { get; set; }
 		
         public long mPlayerID { get; set; }
 
@@ -90,6 +92,16 @@ namespace ETModel
         {
             mNowInpuState = state;
             mFrameWithInputDic[mRollebackDriver.CurrentFrame] = state;
+        }
+
+        public void UpdateInput(InputState state)
+        {
+            KeyCode code = InputHelper.GetKeyCodeByInputState(state);
+            allInputList.Add(code);
+            if (code == KeyCode.UpArrow)
+            {
+                this.Position = new UnityEngine.Vector3(this.Position.x, this.Position.y, this.Position.z + 1);
+            }
         }
 
         public void SetRollBackDriver(RollbackDriver d)

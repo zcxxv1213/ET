@@ -56,6 +56,12 @@ namespace ETModel
         public void Update(MultiInputState input, bool firstTimeSimulated)
         {
             frame++;
+            foreach (var v in players)
+            {
+                InputState state = input[v.mInputAssignment.GetFirstAssignedPlayerIndex()];
+                Log.Debug("InpuState: " + state + "   " + "PlayerID" + v.mPlayerID + "Current Frame : " + frame);
+                v.UpdateInput(state);
+            }
         }
 
         #region Serialization
