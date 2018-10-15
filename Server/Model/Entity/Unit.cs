@@ -34,7 +34,7 @@ namespace ETModel
         Dictionary<int, InputState> mFrameWithInputDic = new Dictionary<int, InputState>();
 
         Queue<C2SCoalesceInput> incomingMessageQueue = new Queue<C2SCoalesceInput>();
-
+        private string mName;
         public InputState mNowInpuState = InputState.None;
 		public UnitType UnitType { get; private set; }
 
@@ -53,6 +53,18 @@ namespace ETModel
         public void SetPlayerInputIndex(int i)
         {
             mPlayerIndex = i;
+        }
+
+        public string name
+        {
+            get
+            {
+                return mName;
+            }
+            set
+            {
+                mName = value;
+            }
         }
 
         public void Awake(UnitType unitType,Team Team)

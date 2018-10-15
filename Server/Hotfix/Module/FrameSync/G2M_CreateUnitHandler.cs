@@ -12,16 +12,15 @@ namespace ETHotfix
             M2G_CreateUnit response = new M2G_CreateUnit();
             try
             {
-                Unit unit = ComponentFactory.Create<Unit, UnitType, Team>(UnitType.Hero, Team.Blue);
-                unit.AddComponent<MoveComponent>();
-                unit.AddComponent<FrameMoveComponent>();
-
-                WorldEntity worldEntity = ComponentFactory.Create<WorldEntity>();
+                Unit unit = UnitFactory.Create(message.PlayerId, "TestName" + message.PlayerId, UnitType.Hero, Team.Blue);
+               // Unit unit = ComponentFactory.Create<Unit, UnitType, Team>(UnitType.Hero, Team.Blue);
+                 WorldEntity worldEntity = WorldEntityFactory.Create();
+                //WorldEntity worldEntity = ComponentFactory.Create<WorldEntity>();
                 await unit.AddComponent<MailBoxComponent>().AddLocation();
                 unit.AddComponent<UnitGateComponent, long>(message.GateSessionId);
                 unit.mPlayerID = message.PlayerId;
                 Game.Scene.GetComponent<UnitComponent>().Add(unit);
-                Game.Scene.GetComponent<WorldManagerComponent>().AddWorld(worldEntity);
+               // Game.Scene.GetComponent<WorldManagerComponent>().AddWorld(worldEntity);
                 Game.Scene.GetComponent<WorldManagerComponent>().AddUnitToWorld(unit, worldEntity);
 
                // worldEntity.GetComponent<WorldManagerComponent>().AddWorld(worldEntity);
@@ -30,9 +29,10 @@ namespace ETHotfix
                 response.Count = Game.Scene.GetComponent<UnitComponent>().Count;
                 reply(response);
                 //TODO 人数达到两人-》Creat;
-                ThreadEntity threadEntity = ComponentFactory.Create<ThreadEntity>();
+                ThreadEntity threadEntity = ThreadEntityFactory.Create();
+                // ThreadEntity threadEntity = ComponentFactory.Create<ThreadEntity>();
                 threadEntity.InitWorldEntity(worldEntity);
-                Game.Scene.GetComponent<ThreadComponent>().Add(threadEntity);
+               // Game.Scene.GetComponent<ThreadComponent>().Add(threadEntity);
                 /*if (response.Count == 2)
 				{
 					Actor_CreateUnits actorCreateUnits = new Actor_CreateUnits();
