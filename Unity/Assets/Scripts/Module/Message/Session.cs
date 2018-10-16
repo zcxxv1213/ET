@@ -201,7 +201,8 @@ namespace ETModel
 			};
 
 			request.RpcId = rpcId;
-			this.Send(0x00, request);
+            request.Time = TimeHelper.GetCurrentTimeUnix();
+            this.Send(0x00, request);
 			return tcs.Task;
 		}
 
@@ -230,13 +231,15 @@ namespace ETModel
 			cancellationToken.Register(() => this.requestCallback.Remove(rpcId));
 
 			request.RpcId = rpcId;
-			this.Send(0x00, request);
+            request.Time = TimeHelper.GetCurrentTimeUnix();
+            this.Send(0x00, request);
 			return tcs.Task;
 		}
 
 		public void Send(IMessage message)
 		{
             message.Time = TimeHelper.GetCurrentTimeUnix();
+            Log.Info("Replay time = " + TimeHelper.GetCurrentTimeUnix());
             this.Send(0x00, message);
 		}
 
@@ -246,8 +249,8 @@ namespace ETModel
 			{
 				throw new Exception("session已经被Dispose了");
 			}
-
-			this.Send(0x01, message);
+            message.Time = TimeHelper.GetCurrentTimeUnix();
+            this.Send(0x01, message);
 		}
 
 		public void Send(byte flag, IMessage message)
