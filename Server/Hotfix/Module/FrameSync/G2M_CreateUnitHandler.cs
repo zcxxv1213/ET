@@ -19,7 +19,6 @@ namespace ETHotfix
                 await unit.AddComponent<MailBoxComponent>().AddLocation();
                 unit.AddComponent<UnitGateComponent, long>(message.GateSessionId);
                 unit.mPlayerID = message.PlayerId;
-                Game.Scene.GetComponent<UnitComponent>().Add(unit);
                // Game.Scene.GetComponent<WorldManagerComponent>().AddWorld(worldEntity);
                 Game.Scene.GetComponent<WorldManagerComponent>().AddUnitToWorld(unit, worldEntity);
 
