@@ -8,6 +8,7 @@ namespace ETModel
     public class ThreadFrameComponent : Component
     {
         WorldEntity mWorldEntity;
+        ThreadEntity mThreadEntity;
         public static int s_intervalTime = 1000; //单位毫微秒
         public int FrameRate = 32;
         public int InfluenceResolution = 2;
@@ -36,8 +37,9 @@ namespace ETModel
                 }
             }
         }
-        public void InitComponent()
+        public void InitComponent(ThreadEntity threadEntity)
         {
+            mThreadEntity = threadEntity;
             FrameCount = 0;
             DeltaTime = FixedMath.One / FrameRate;
             Log.Info(DeltaTime.ToString());
@@ -47,6 +49,7 @@ namespace ETModel
             PlayRate = FixedMath.One;
             InfluenceCount = 0;
             PauseCount = 0;
+            Log.Info("ThreadID:" + this.InstanceId.ToString());
             t = new Thread(UpdateLogic);
             t.Start();
         }
@@ -63,14 +66,22 @@ namespace ETModel
 
         private void UpdateLogic()
         {
+           
+            
             int time = ServiceTime.GetServiceTime();
             int lastTime = ServiceTime.GetServiceTime();
-            while (true)
+            Log.Info("ThreadDispose:" + this.IsDisposed);
+            while (!this.IsDisposed)
             {
-                if (this.IsDisposed)
+                //if (this.IsDisposed)
+                // break;
+                Log.Info("UnitCount : " + mWorldEntity.mUnitList.Count);
+                if (mWorldEntity.mUnitList.Count == 0)
+                {
+                    this.Dispose();
                     break;
-
-                Log.Info(mWorldEntity.ReadyForUpdate().ToString());
+                }
+                // Log.Info(mWorldEntity.ReadyForUpdate().ToString());
                 if (mWorldEntity.ReadyForUpdate() == true)
                 {
                     lastTime = ServiceTime.GetServiceTime();
@@ -98,7 +109,10 @@ namespace ETModel
             {
                 return;
             }
-          
+            mWorldEntity = null;
+            mThreadEntity = null;
+            t = null;
+            base.Dispose();
         }
     }
 }

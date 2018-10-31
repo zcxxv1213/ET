@@ -10,5 +10,15 @@ namespace ETModel
     public class FrameMoveComponent:Component
     {
         public FrameMoveData moveData = new FrameMoveData();
+
+        public override void Dispose()
+        {
+            if (this.IsDisposed)
+            {
+                return;
+            }
+            moveData = null;
+            base.Dispose();
+        }
     }
 }

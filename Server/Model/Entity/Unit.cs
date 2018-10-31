@@ -27,7 +27,7 @@ namespace ETModel
 		}
 	}
 
-	public sealed class Unit: Entity
+    public sealed class Unit: Entity
 	{
         public RollbackDriver mRollebackDriver;
         public int mPlayerIndex;
@@ -126,7 +126,25 @@ namespace ETModel
 				return;
 			}
 
-			base.Dispose();
+            mRollebackDriver = null;
+            mPlayerIndex = 0;
+            ReadyForUpdate = false;
+            mFrameWithInputDic.Clear();
+
+            incomingMessageQueue.Clear();
+            mName = null;
+            mNowInpuState = InputState.None;
+
+            allInputList.Clear();
+            mInputAssignment = InputAssignment.None;
+            Position = UnityEngine.Vector3.zero;
+            mPlayerID = 0;
+
+            base.Dispose();
 		}
+        ~Unit()
+        {
+            Log.Info("调用析构函数");
+        }
 	}
 }

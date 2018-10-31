@@ -11,6 +11,7 @@ namespace ETHotfix
 		{
             // 发送断线消息
             //不等于0的时候才进入地图
+            Log.Warning("ID :" + self.Player.UnitId + "断线");
             if (self.Player.UnitId != 0)
             {
                 ActorMessageSender actorMessageSender = Game.Scene.GetComponent<ActorMessageSenderComponent>().Get(self.Player.UnitId);

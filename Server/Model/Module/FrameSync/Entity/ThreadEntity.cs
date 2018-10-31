@@ -22,7 +22,7 @@ namespace ETModel
         {
             Log.Info("AddThreadComponent");
             mFrameComponent = this.AddComponent<ThreadFrameComponent>();
-            mFrameComponent.InitComponent();
+            mFrameComponent.InitComponent(this);
         }
 
         public void InitWorldEntity(WorldEntity w)
@@ -38,7 +38,8 @@ namespace ETModel
             {
                 return;
             }
-
+            ThreadComponent threadComponent = Game.Scene.GetComponent<ThreadComponent>();
+            threadComponent.Remove(this.Id);
             base.Dispose();
         }
     }

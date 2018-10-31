@@ -14,9 +14,11 @@ namespace ETModel
             mEntityList.Add(entity);
         }
 
-        public void RemoveWorld()
+        public void RemoveWorld(Unit u)
         {
             //RemoveUnit - > Remove World
+            mWorldDic[u.Id] = null;
+
         }
 
         public WorldEntity GetWorldByUnit(Unit u)
@@ -30,6 +32,12 @@ namespace ETModel
             {
                 return null;
             }
+        }
+
+        public void RemoveUnit(Unit u)
+        {
+            mWorldDic.Remove(u.Id);
+            this.RemoveWorld(u);
         }
 
         public void AddUnitToWorld(Unit u,WorldEntity world)

@@ -20,7 +20,7 @@ namespace ETModel {
         public int maxInputCount = 4;
         public void Awake()
         {
-            this.AddComponent<WorldManagerComponent>();
+           // this.AddComponent<WorldManagerComponent>();
             this.AddComponent<RollbackDriver>();
         }
 
@@ -33,6 +33,10 @@ namespace ETModel {
         public void BroadCastMessageToUnitsInWorld(IActorMessage message)
         {
 
+        }
+        public GameState GetGameState()
+        {
+            return mGameState;
         }
         public void AddUnit(Unit u)
         {
@@ -47,7 +51,11 @@ namespace ETModel {
                 Log.Warning("重复添加UnitTo World");
             }
         }
-
+        public void RemoveUnitFromWorld(Unit u)
+        {
+            mUnitList.Remove(u);
+            mInputIndexDic[u.mPlayerIndex] = null;
+        }
         private void AddUnitWithInputIndex(Unit mUnit)
         {
             Unit U;
@@ -105,7 +113,8 @@ namespace ETModel {
             {
                 return;
             }
-
+            mUnitList.Clear();
+            mInputIndexDic.Clear();
             base.Dispose();
         }
     }

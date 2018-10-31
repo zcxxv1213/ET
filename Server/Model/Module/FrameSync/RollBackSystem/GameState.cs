@@ -17,7 +17,10 @@ namespace ETModel
         {
             players[u.mPlayerIndex] = u;
         }
-
+        public void RemoveGameUnit(Unit u)
+        {
+            players[u.mPlayerIndex] = null;
+        }
         public void AfterPrediction()
         {
 

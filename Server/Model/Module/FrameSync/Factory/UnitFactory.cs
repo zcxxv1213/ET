@@ -11,7 +11,7 @@ namespace ETModel
             UnitComponent unitComponent = Game.Scene.GetComponent<UnitComponent>();
             Unit unit = ComponentFactory.CreateWithId<Unit, UnitType, Team>(id,type, team);
             unit.name = name;
-            unit.AddComponent<MoveComponent>();
+         //   unit.AddComponent<MoveComponent>();
             unit.AddComponent<FrameMoveComponent>();
             unitComponent.Add(unit);
             return unit;
