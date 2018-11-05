@@ -275,23 +275,19 @@ namespace RollBack
             Debug.Log(inputIndex);
             // Each input index's Join/Leave events must be ordered by frame (ie: cannot insert a join before a leave,
             // which would represent two clients online at the same time, which is not possible)
-            if (SimulateHelper.simulateState != SimulateHelper.SimulateState.local)
+            if (onlineStateBuffer.Count > 0)
             {
-                if (onlineStateBuffer.Count > 0)
-                {
-                    Debug.Log(onlineStateBuffer.Count);
-                    int lastOnlineStateFrame = onlineStateBuffer.Keys[onlineStateBuffer.Count - 1];
-                    OnlineState lastOnlineState = onlineStateBuffer.Values[onlineStateBuffer.Count - 1];
+                Debug.Log(onlineStateBuffer.Count);
+                int lastOnlineStateFrame = onlineStateBuffer.Keys[onlineStateBuffer.Count - 1];
+                OnlineState lastOnlineState = onlineStateBuffer.Values[onlineStateBuffer.Count - 1];
 
-                    if (frame < lastOnlineStateFrame || (joiningPlayerName != null) == lastOnlineState.Online)
-                    {
-                        Debug.Log(frame + "," + lastOnlineStateFrame + "," + joiningPlayerName + "," + lastOnlineState.Online);
-                        //  Debug.Assert(!network.IsServer); // <- If this ever happens on the server it's a local programming error!
-                        Debug.LogError("Bad online state ordering");
-                    }
+                if (frame < lastOnlineStateFrame || (joiningPlayerName != null) == lastOnlineState.Online)
+                {
+                    Debug.Log(frame + "," + lastOnlineStateFrame + "," + joiningPlayerName + "," + lastOnlineState.Online);
+                    //  Debug.Assert(!network.IsServer); // <- If this ever happens on the server it's a local programming error!
+                    Debug.LogError("Bad online state ordering");
                 }
             }
-
 
             if (onlineStateBuffer.Count > 0 && onlineStateBuffer.Keys[onlineStateBuffer.Count - 1] == frame)
             {
@@ -1783,59 +1779,20 @@ namespace RollBack
                  return; // Nothing to do!*/
             // This is a suitable proxy for "have we started running" on both client and server:
             //   Debug.Log(latestJoinLeaveEvent);
-            if (SimulateHelper.simulateState == SimulateHelper.SimulateState.local && latestJoinLeaveEvent == 0)
+            if (latestJoinLeaveEvent == 0)
             {
-                Debug.Log("LocalStart");
                 this.StartOnServer();
-                Unit u = ETModel.Game.Scene.GetComponent<BattleControlComponent>().GetMainUnit();
-                JoinLeaveEventMessage joinLeaveEventMessage = new JoinLeaveEventMessage();
-                ConnectMessage connectMessage = new ConnectMessage();
-                connectMessage.MConnectJLEMessage = new JoinLeaveEventMessage();
-                connectMessage.MOnlineStateBuffer = new OnlineStateBuffer();
-                connectMessage.MOnlineStateBuffer.MyMessageInputRLE = new MessageInputRLE();
-                //正常服务器流程加入了之后需要将这两个Message发送到各个客户端
-                this.JoinOnServer(u, ref joinLeaveEventMessage, ref connectMessage);
-                //  this.JoinOnClient(u,joinLeaveEventMessage);
-                //  this.ClientConnect(connectMessage);
-                //   latestJoinLeaveEvent += 1;
             }
             Debug.Assert(latestJoinLeaveEvent > 0);
 
             try
             {
                 ReadAllNetworkMessages();
-                Debug.Log("1");
                 CheckRemoteNCFAndJLEBackstop();
-                Debug.Log("2");
                 DoPrediction();
-                Debug.Log("3");
                 UpdateNewestConsistentFrame();
-                Debug.Log("4");
-                /* if (network.IsServer)
-                 {
-                     Tick(unnetworkedInputs);
-                 }*/
-                if (SimulateHelper.simulateState == SimulateHelper.SimulateState.local)
-                {
-                    Tick(mWorldEntity.GetMainUnit().mNowInpuState);
-                }
-                else
-                {
-                    ClientUpdateTiming(elapsedTime);
-                    // Check we're not about to flood the network.
-                    // Note: This limit is still quite high. Could do fancy things like RLE so we don't send
-                    //       a huge number of packets when approaching this limit. But probably not worth it.
-                    if (CurrentFrame < synchronisedClock.CurrentFrame - InputBroadcastFloodLimit)
-                    {
-                        Debug.Log("CurrentFrame:" + CurrentFrame + "   " + "synchronisedClock.currentFrame : " + synchronisedClock.CurrentFrame + "InputBroadcastFloodLimit" + InputBroadcastFloodLimit);
-                        //  network.Disconnect(UserVisibleStrings.GameClockOutOfSync);
-                        return;
-                    }
-                    //发送当前操作
-                    while (CurrentFrame < synchronisedClock.CurrentFrame)
-                        Tick(mWorldEntity.GetMainUnit().mNowInpuState);
+                Tick(unnetworkedInputs);
 
-                }
                 CleanupBuffers();
             }
             catch (Exception e) { return; } // The network disconnected us
@@ -1869,10 +1826,10 @@ namespace RollBack
         /// <param name="displayToUser">True if this is the final tick we are going to do during the update (ie: it will draw)</param>
         void Tick(InputState input)
         {
-            Debug.Log(input);
             // Advance input:
             CurrentFrame++;
-            ExtractAndBroadcastLocalInput(input);
+            //服务器不需要这个操作
+           // ExtractAndBroadcastLocalInput(input);
 
             // Advance game state:
             // (Note that we don't ever move the simulation frame backwards, we just wait to catch up)
