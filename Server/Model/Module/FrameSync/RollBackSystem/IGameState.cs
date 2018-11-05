@@ -34,6 +34,6 @@ namespace RollBack
         /// <summary>Use to apply captured smoothing data</summary>
         void AfterPrediction();
         byte[] Serialize();
-        void DeSerialize(byte[] data);
+        void Deserialize(byte[] data);
     }
 }

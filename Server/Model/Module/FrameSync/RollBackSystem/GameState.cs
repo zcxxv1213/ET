@@ -85,7 +85,7 @@ namespace ETModel
             return ms.ToArray();
         }
 
-        public void DeSerialize(byte[] data)
+        public void Deserialize(byte[] data)
         {
             MemoryStream ms = new MemoryStream(data);
             BinaryReader br = new BinaryReader(ms);
