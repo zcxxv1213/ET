@@ -1400,7 +1400,7 @@ namespace RollBack
         PacketTimeTracker packetTimeTracker;
         SynchronisedClock synchronisedClock;
 
-        void ClientSetupTiming(int serverCurrentFrame)
+        /*void ClientSetupTiming(int serverCurrentFrame)
         {
             packetTimeTracker = new PacketTimeTracker();
 
@@ -1417,10 +1417,10 @@ namespace RollBack
             Debug.Log("Client starting time at input frame = " + CurrentFrame + ", simulation frame = " + CurrentSimulationFrame);
 
             synchronisedClock = new SynchronisedClock(packetTimeTracker);
-        }
+        }*/
 
 
-        void ClientReceiveTimingPacket(int remoteCurrentFrame)
+        /*void ClientReceiveTimingPacket(int remoteCurrentFrame)
         {
             //计算RTT
             // double rtt = messageForTiming.SenderConnection.AverageRoundtripTime;
@@ -1451,8 +1451,8 @@ namespace RollBack
             packetTimeTracker.ReceivePacket(remoteCurrentFrame, estimatedLocalTimeOfSend);
         }
 
-
-        void ClientUpdateTiming(double elapsedTime)
+        */
+        /*void ClientUpdateTiming(double elapsedTime)
         {
             Debug.Log("Update1");
             //   Debug.Assert(network.IsApplicationConnected);
@@ -1461,7 +1461,7 @@ namespace RollBack
             Debug.Log("Update2");
             synchronisedClock.Update(elapsedTime);
             Debug.Log("Update3");
-        }
+        }*/
 
         #endregion
         #region Input Broadcast
@@ -1516,10 +1516,10 @@ namespace RollBack
                     mC2SMsg.LatestJoinLeaveEvent = latestJoinLeaveEvent;
                     mC2SMsg.NCFSnapshot = GetHashForSnapshot(newestConsistentFrame);
                 }
-                if (SimulateHelper.simulateState == SimulateHelper.SimulateState.online)
+                /*if (SimulateHelper.simulateState == SimulateHelper.SimulateState.online)
                     ETModel.Game.Scene.GetComponent<ETModel.SessionComponent>().Session.Send(mC2SMsg);
                 else
-                    ETModel.Game.Scene.GetComponent<BattleControlComponent>().GetMainUnit().QueueMessage(mC2SMsg);
+                    ETModel.Game.Scene.GetComponent<BattleControlComponent>().GetMainUnit().QueueMessage(mC2SMsg);*/
                 //this.Dispatch<List<Unit>, S2CCoalesceInput>(EventConstant.SEND_OR_COALESCE_INPUT, mWorldEntity.mUnitList, mS2CMsg);
                 if (!debugDisableInputBroadcast)
                     //   network.Broadcast(message, NetDeliveryMethod.ReliableUnordered, 0);
@@ -1652,8 +1652,6 @@ namespace RollBack
                 //     RejectInputPastFrontstop(remotePeer);
                 return;
             }
-            //客户端默认记录时间
-            ClientReceiveTimingPacket(frameAfterRemoteCurrentFrame - 1);
 
         }
 
@@ -1726,15 +1724,14 @@ namespace RollBack
             Debug.Assert(hashBuffer.Count == 0);
 
             Debug.Log("First snapshot size = " + initialSnapshot.Length + " bytes");
-            Unit u = ETModel.Game.Scene.GetComponent<BattleControlComponent>().GetMainUnit();
-            Debug.Log(u != null);
-            hostForJLE.Add(0, (int)u.mPlayerID);
+          //  Unit u = ETModel.Game.Scene.GetComponent<BattleControlComponent>().GetMainUnit();
+         //   hostForJLE.Add(0, (int)u.mPlayerID);
 
             // Add ourselves to the game:
             Debug.Assert(latestJoinLeaveEvent == 0);
             Debug.Assert(serverNewestConsistentFrame == 0);
-            JoinLeaveEvent jle = ServerCreateJoinEvent(1, u);
-            ApplyJoinLeaveEvent(jle);
+         //   JoinLeaveEvent jle = ServerCreateJoinEvent(1, u);
+         //   ApplyJoinLeaveEvent(jle);
         }
 
         JoinLeaveEvent ServerCreateJoinEvent(int frame, Unit u)
@@ -1752,14 +1749,14 @@ namespace RollBack
             Debug.Assert(jle.eventId > 0);
             Debug.Assert(latestJoinLeaveEvent == 0 || jle.eventId == latestJoinLeaveEvent + 1); // events are contiguious
             Debug.Assert(jle.consistentFrame >= serverNewestConsistentFrame);
-            Debug.Assert(SimulateHelper.simulateState != SimulateHelper.SimulateState.online || jle.consistentFrame == serverNewestConsistentFrame);
+        //    Debug.Assert(SimulateHelper.simulateState != SimulateHelper.SimulateState.online || jle.consistentFrame == serverNewestConsistentFrame);
 
             latestJoinLeaveEvent = jle.eventId;
             serverNewestConsistentFrame = jle.consistentFrame;
 
             // Cannot be consistent at or after the join/leave frame (so push NCFs backwards)
-            if (SimulateHelper.simulateState != SimulateHelper.SimulateState.online)
-                ResetLocalNCF(jle.frame - 1);
+         //   if (SimulateHelper.simulateState != SimulateHelper.SimulateState.online)
+          //      ResetLocalNCF(jle.frame - 1);
             ResetRemoteNCFs(jle.frame - 1);
 
             joinLeaveEvents.Add(jle);
@@ -1791,7 +1788,7 @@ namespace RollBack
                 CheckRemoteNCFAndJLEBackstop();
                 DoPrediction();
                 UpdateNewestConsistentFrame();
-                Tick(unnetworkedInputs);
+            //    Tick(unnetworkedInputs);
 
                 CleanupBuffers();
             }
@@ -1977,8 +1974,8 @@ namespace RollBack
             //
 
             JoinLeaveEvent joinEvent = new JoinLeaveEvent(message.MConnectJLEMessage.EventId, message.MConnectJLEMessage);
-            Unit u = ETModel.Game.Scene.GetComponent<BattleControlComponent>().GetMainUnit();
-            ValidateNextJoinLeaveEvent(joinEvent, true, 0, u.mInputAssignment);
+         //   Unit u = ETModel.Game.Scene.GetComponent<BattleControlComponent>().GetMainUnit();
+         //   ValidateNextJoinLeaveEvent(joinEvent, true, 0, u.mInputAssignment);
             //
             // Load in the game state at the consistency point, and known changes from the server beyond that point:
             //
@@ -2036,9 +2033,9 @@ namespace RollBack
             // Receive the server's inputs that come after the consistency point
             // (other clients will send their's when they are told we have come online)
             int frameAfterServerCurrentFrame;
-            ReceiveInputRLE(inputBuffers[u.mInputAssignment.GetFirstAssignedPlayerIndex()],
-                    message.MOnlineStateBuffer.MyMessageInputRLE, joinEvent.consistentFrame + 1, out frameAfterServerCurrentFrame);
-            int serverCurrentFrame = frameAfterServerCurrentFrame - 1;
+          //  ReceiveInputRLE(inputBuffers[u.mInputAssignment.GetFirstAssignedPlayerIndex()],
+      //              message.MOnlineStateBuffer.MyMessageInputRLE, joinEvent.consistentFrame + 1, out frameAfterServerCurrentFrame);
+         //   int serverCurrentFrame = frameAfterServerCurrentFrame - 1;
 
 
             // At this point, we have replicated the server's consistency state
@@ -2051,13 +2048,13 @@ namespace RollBack
             //
 
             // Add ourselves to the game:
-            hostForJLE.Add(0, (int)u.mPlayerID);
+          //  hostForJLE.Add(0, (int)u.mPlayerID);
             ApplyJoinLeaveEvent(joinEvent);
 
             // Setup timing, which sets the current frame:
             // TODO: Client should wait to start and sync with a regular input packet, rather than using the connect packet
             //       (Because the connect packet could be huge/fragmented, and is sent ReliableOrdered - so could be slow)
-            ClientSetupTiming(serverCurrentFrame);
+       //     ClientSetupTiming(serverCurrentFrame);
 
             // Fill in our inputs up until that frame with whatever the server tells us to
             InputState fillInputState = LocalInputBuffer[joinEvent.consistentFrame]; // Get the value set by the "prediction-warming" event
