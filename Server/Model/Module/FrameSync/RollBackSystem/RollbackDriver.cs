@@ -1734,10 +1734,10 @@ namespace RollBack
          //   ApplyJoinLeaveEvent(jle);
         }
 
-        JoinLeaveEvent ServerCreateJoinEvent(int frame, Unit u)
+        /*JoinLeaveEvent ServerCreateJoinEvent(int frame, Unit u)
         {
             return ServerCreateJoinLeaveEvent(frame, (int)u.mInputAssignment, u.name, u.GetNowPlayerData());
-        }
+        }*/
 
         /// <param name="joiningPlayerName">The name of a joining player, or null for a leaving player</param>
         JoinLeaveEvent ServerCreateJoinLeaveEvent(int frame, int inputIndex, string joiningPlayerName, byte[] joiningPlayerData)
@@ -1846,59 +1846,7 @@ namespace RollBack
                 snapshotBuffer[CurrentSimulationFrame] = game.Serialize();
             }
         }
-
-
         #endregion
-
-
-        public void JoinOnServer(Unit u, ref JoinLeaveEventMessage joinMessage, ref ConnectMessage conMessage)
-        {
-            Debug.Assert(serverNewestConsistentFrame == newestConsistentFrame); // this should be true for the server
-            Debug.Assert(serverNewestConsistentFrame <= CurrentFrame); // <- need to have the inputs
-            Debug.Assert(serverNewestConsistentFrame <= CurrentSimulationFrame); // <- need to have the snapshot
-
-            double maximumJoinDelaySeconds = 0.25;
-            //这里是客户端自己发自己收，所以双向速度为0;
-            double joinDelaySeconds = Math.Min(Math.Max(0, 0.0) / 2.0, maximumJoinDelaySeconds);
-            int joinFrame = CurrentFrame + (int)Math.Round(joinDelaySeconds * FramesPerSecond);
-            Debug.Log("CurrentFrame" + CurrentFrame + "," + joinDelaySeconds * FramesPerSecond);
-            var onlineStateBuffer = onlineStateBuffers[u.mInputAssignment.GetFirstAssignedPlayerIndex()];
-            if (onlineStateBuffer.Count > 0 && joinFrame < onlineStateBuffer.Keys[onlineStateBuffer.Count - 1])
-                joinFrame = onlineStateBuffer.Keys[onlineStateBuffer.Count - 1];
-            // Absolutely cannot join on an already-consistent frame:
-            if (joinFrame <= serverNewestConsistentFrame)
-                joinFrame = serverNewestConsistentFrame + 1;
-
-            Debug.Log(joinFrame);
-            JoinLeaveEvent joinEvent = ServerCreateJoinEvent(joinFrame, u);
-            Debug.Assert(joinEvent.consistentFrame == serverNewestConsistentFrame);
-            Debug.Log(joinMessage);
-            joinEvent.WriteToNetwork(joinMessage);
-            WriteInputPredictionWarmValues(joinMessage);
-            Debug.Log(conMessage);
-            Debug.Log(conMessage.MConnectJLEMessage);
-            joinEvent.WriteToNetwork(conMessage.MConnectJLEMessage);
-            WriteInputPredictionWarmValues(conMessage.MConnectJLEMessage);
-
-
-            byte[] snapshot = snapshotBuffer[joinEvent.consistentFrame];
-            Debug.Log("Sending snapshot " + joinEvent.consistentFrame + " with size = " + snapshot.Length + " bytes");
-            //Debug.Assert(snapshot.Length < 1300); // <- If this triggers, the snapshot is getting to around the size where it will cause packet fragmentation
-            //Debug.Assert(snapshot.Length < 4000); // <- If this triggers, the snapshot size is getting dangerously large
-            conMessage.SnapShotLength = snapshot.Length;
-            // connectedMessage.Write(snapshot.Length);
-            // TODO: Add simple compression to snapshots sent over the network
-            conMessage.SnapShotBytes = Google.Protobuf.ByteString.CopyFrom(snapshot);
-            // connectedMessage.Write(snapshot);
-            WriteOnlineStateBuffer(conMessage, joinEvent.consistentFrame);
-
-            // Write our local input buffer from the consistency point for the joining client (other clients will do the same with a regular input message):
-            WriteInputRLE(LocalInputBuffer, joinEvent.consistentFrame + 1, CurrentFrame - joinEvent.consistentFrame, conMessage.MOnlineStateBuffer.MyMessageInputRLE);
-
-            ApplyJoinLeaveEvent(joinEvent);
-            StartTrackingRemoteNCFAndJLE((int)u.mPlayerID, joinEvent.consistentFrame, joinEvent.eventId);
-
-        }
 
         void WriteInputPredictionWarmValues(JoinLeaveEventMessage message)
         {
